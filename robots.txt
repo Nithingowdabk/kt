@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /ajax/
+Disallow: /logs/
+Disallow: /scratch/
+
+# Google XML Sitemap
+Sitemap: https://karnatakatrekkers.com/sitemap.xml

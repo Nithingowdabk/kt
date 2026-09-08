@@ -1,0 +1,9 @@
+.env
+/vendor/
+/logs/
+*.log
+composer.phar
+KarnatakaTrekkers-Copy/
+scratch/
+.DS_Store
+Thumbs.db

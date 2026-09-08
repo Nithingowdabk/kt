@@ -1,0 +1,264 @@
+/* Karnataka Trekkers Admin Dashboard Stylesheet */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --admin-primary: #2D5A27;
+    --admin-secondary: #34495E;
+    --admin-dark: #1E293B;
+    --admin-light: #F8FAFC;
+    --sidebar-width: 260px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body.admin-body {
+    background-color: #F1F5F9;
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Sidebar Wrapper */
+#wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: var(--sidebar-width);
+    margin-left: calc(-1 * var(--sidebar-width));
+    background-color: var(--admin-dark);
+    transition: margin 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 1000;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 20px 24px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+#sidebar-wrapper .sidebar-heading span {
+    color: #E67E22;
+}
+
+#sidebar-wrapper .list-group {
+    width: var(--sidebar-width);
+}
+
+#sidebar-wrapper .list-group-item {
+    background-color: transparent;
+    border: none;
+    color: #94A3B8;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+#sidebar-wrapper .list-group-item:hover,
+#sidebar-wrapper .list-group-item.active {
+    background-color: rgba(255,255,255,0.05);
+    color: #FFFFFF;
+    border-left: 4px solid #E67E22;
+}
+
+#sidebar-wrapper .list-group-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Page Content Wrapper */
+#page-content-wrapper {
+    min-width: 100vw;
+    transition: margin 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+/* Top Admin Nav */
+.admin-navbar {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    padding: 15px 30px;
+}
+
+/* Stats Cards */
+.stat-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition);
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+.stat-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+.stat-icon.primary { background-color: rgba(45, 90, 39, 0.1); color: var(--admin-primary); }
+.stat-icon.warning { background-color: rgba(230, 126, 34, 0.1); color: #E67E22; }
+.stat-icon.success { background-color: rgba(46, 204, 113, 0.1); color: #2ECC71; }
+.stat-icon.danger { background-color: rgba(231, 76, 60, 0.1); color: #E74C3C; }
+
+/* Admin Forms */
+.admin-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #E2E8F0;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.table-custom th {
+    background-color: #F8FAFC;
+    color: #64748B;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 15px;
+}
+.table-custom td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+/* Itinerary Repeater Row */
+.itinerary-row {
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Admin Login Page */
+.admin-login-container {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--admin-dark), #0F172A);
+    padding: 15px;
+}
+.admin-login-card {
+    width: 100%;
+    max-width: 420px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* Desktop sidebar default state */
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+}
+
+/* ==========================================================================
+   Admin-Specific Responsive Overrides
+   ========================================================================== */
+
+/* Tablet: Collapsible sidebar */
+@media (max-width: 1024px) and (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: calc(-1 * var(--sidebar-width)) !important;
+        position: fixed;
+        height: 100%;
+        z-index: 1050;
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0 !important;
+    }
+    #page-content-wrapper {
+        min-width: 100vw !important;
+    }
+    .admin-navbar {
+        padding: 12px 20px;
+    }
+    .stat-card {
+        padding: 18px;
+    }
+}
+
+/* Mobile: Off-canvas sidebar */
+@media (max-width: 767px) {
+    /* Admin forms full width */
+    .admin-card .form-control,
+    .admin-card .form-select,
+    .admin-card textarea {
+        width: 100% !important;
+    }
+
+    /* Admin card compact */
+    .admin-card {
+        padding: 18px;
+        margin-bottom: 20px;
+    }
+
+    /* Itinerary builder mobile */
+    .itinerary-row {
+        padding: 15px;
+    }
+    .itinerary-row .row .col-md-4,
+    .itinerary-row .row .col-md-8 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    /* Table responsive in admin */
+    .table-responsive {
+        border: none;
+    }
+
+    /* Admin login mobile */
+    .admin-login-card {
+        padding: 25px;
+    }
+
+    /* Trek leader portal — card-based list */
+    .leader-batch-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    /* Admin container padding */
+    .container-fluid.p-4 {
+        padding: 15px !important;
+    }
+}

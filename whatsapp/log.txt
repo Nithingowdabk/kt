@@ -1,0 +1,794 @@
+[2026-06-03 16:42:11] TO: 919606539150
+MESSAGE: Hello Nithin,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-05 19:29:09] TO: 919876543210
+MESSAGE: 🔔 *New Callback Request!*
+
+👤 *Name:* erty
+📞 *Phone:* 9606539150
+🏔️ *Trek:* Kumara Parvatha Trek
+🗓️ *Date:* 10 Jun 2026
+👥 *Participants:* 4
+💬 *Message:* N/A
+--------------------------------------------------
+[2026-06-07 16:06:59] TO: 919606539150
+MESSAGE: Hello Nithin,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260607-1D00
+🌄 Trek: Kumara Parvatha Trek
+🗓️ Date: 19 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹3,699.00
+📍 Pick-up Point: bengaluru (05:55 AM)
+
+Download invoice details: http://localhost/KarnatakaTrekkers/booking/invoice.php?booking_no=KT-20260607-1D00
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-07 16:06:59] TO: 919606539150
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithin","KT-20260607-1D00","Kumara Parvatha Trek","19 Jun 2026","1 Person(s)","\u20b93,699.00","bengaluru (05:55 AM)"]
+--------------------------------------------------
+[2026-06-08 12:28:47] TO: 919606539150
+MESSAGE: Hello Nithin,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260608-CE6A
+🌄 Trek: Uttari Betta Sunrise Trek
+🗓️ Date: 12 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1,497.00
+📍 Pick-up Point: Silk Board Junction (12:20 PM)
+
+Download invoice details: http://localhost:8000/booking/invoice.php?booking_no=KT-20260608-CE6A
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-08 12:28:47] TO: 919606539150
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithin","KT-20260608-CE6A","Uttari Betta Sunrise Trek","12 Jun 2026","1 Person(s)","\u20b91,497.00","Silk Board Junction (12:20 PM)"]
+--------------------------------------------------
+[2026-06-08 12:37:51] TO: 918495036597
+MESSAGE: Hello Ranjith,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-08 13:10:02] TO: 919606539150
+MESSAGE: Hello Nithin,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260608-94F5
+🌄 Trek: Uttari Betta Sunrise Trek
+🗓️ Date: 12 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1,497.00
+📍 Pick-up Point: BTM Layout (12:35 PM)
+
+Download invoice details: https://subproctorial-sensitometrically-delilah.ngrok-free.dev/KarnatakaTrekkers/booking/invoice.php?booking_no=KT-20260608-94F5
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-08 13:10:02] TO: 919606539150
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithin","KT-20260608-94F5","Uttari Betta Sunrise Trek","12 Jun 2026","1 Person(s)","\u20b91,497.00","BTM Layout (12:35 PM)"]
+--------------------------------------------------
+[2026-06-08 14:07:10] TO: 919742109920
+MESSAGE: Hello Karthik,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-08 14:08:17] TO: 919742109920
+MESSAGE: Hello Karthik,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260608-0413
+🌄 Trek: Uttari Betta Sunrise Trek
+🗓️ Date: 12 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1,497.00
+📍 Pick-up Point: Marathahalli kalaMandir (11:00 AM)
+
+Download invoice details: https://subproctorial-sensitometrically-delilah.ngrok-free.dev/KarnatakaTrekkers/booking/invoice.php?booking_no=KT-20260608-0413
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-08 14:08:17] TO: 919742109920
+TEMPLATE: booking_confirmation
+PARAMS: ["Karthik","KT-20260608-0413","Uttari Betta Sunrise Trek","12 Jun 2026","1 Person(s)","\u20b91,497.00","Marathahalli kalaMandir (11:00 AM)"]
+--------------------------------------------------
+[2026-06-08 14:08:20] TO: 919606539150
+MESSAGE: Hello Nithin,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260608-3612
+🌄 Trek: Uttari Betta Sunrise Trek
+🗓️ Date: 22 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1,497.00
+📍 Pick-up Point: RR Nagar (01:10 AM)
+
+Download invoice details: https://subproctorial-sensitometrically-delilah.ngrok-free.dev/KarnatakaTrekkers/booking/invoice.php?booking_no=KT-20260608-3612
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-08 14:08:20] TO: 919606539150
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithin","KT-20260608-3612","Uttari Betta Sunrise Trek","22 Jun 2026","1 Person(s)","\u20b91,497.00","RR Nagar (01:10 AM)"]
+--------------------------------------------------
+[2026-06-08 15:24:52] TO: 07411012323
+MESSAGE: Hello yogi raj,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-18 21:47:18] TO: 918951221179
+MESSAGE: New contact message from Ranjith (8495036597):
+Subject: Kudremukha Trek
+Message: We Are Group Og 10 people planning for Kudremukha Trek
+--------------------------------------------------
+[2026-06-20 23:55:59] TO: 918298799555
+MESSAGE: Hello Raghib,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-24 00:46:53] TO: 918495036597
+MESSAGE: Hello Ranjith,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-24 00:47:51] TO: 918495036597
+MESSAGE: Hello Ranjith,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-472A
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Yeshwanthpur (09:45 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-472A
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-24 00:47:51] TO: 918495036597
+TEMPLATE: booking_confirmation
+PARAMS: ["Ranjith","KT-20260624-472A","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Yeshwanthpur (09:45 PM)"]
+--------------------------------------------------
+[2026-06-24 00:49:15] TO: 918495036597
+MESSAGE: Hello Ranjith,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-472A
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Yeshwanthpur (09:45 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-472A
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-24 00:49:15] TO: 918495036597
+TEMPLATE: booking_confirmation
+PARAMS: ["Ranjith","KT-20260624-472A","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Yeshwanthpur (09:45 PM)"]
+--------------------------------------------------
+[2026-06-24 07:46:10] TO: 918310543435
+MESSAGE: Hello Nithya YK,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-24 07:47:17] TO: 918310543435
+MESSAGE: Hello Nithya YK,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-DFD4
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Gorguntepalya (09:30 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-DFD4
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-24 07:47:17] TO: 918310543435
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithya YK","KT-20260624-DFD4","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Gorguntepalya (09:30 PM)"]
+--------------------------------------------------
+[2026-06-25 10:34:19] TO: 917975073021
+MESSAGE: Hello MOHAMMED SIDDIQUE KHAN,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-25 11:46:47] TO: 919900338645
+MESSAGE: Hello Karthik G,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-26 00:15:49] TO: 917483516182
+MESSAGE: Hello Keerthi,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-28 19:53:04] TO: 919108245148
+MESSAGE: Hello K Karthik,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-06-30 00:37:34] TO: 918310543435
+MESSAGE: Hello Nithya YK,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-DFD4
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Gorguntepalya (09:30 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-DFD4
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-30 00:37:34] TO: 918310543435
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithya YK","KT-20260624-DFD4","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Gorguntepalya (09:30 PM)"]
+--------------------------------------------------
+[2026-06-30 00:37:43] TO: 918495036597
+MESSAGE: Hello Ranjith,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-472A
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Yeshwanthpur (09:45 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-472A
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-30 00:37:43] TO: 918495036597
+TEMPLATE: booking_confirmation
+PARAMS: ["Ranjith","KT-20260624-472A","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Yeshwanthpur (09:45 PM)"]
+--------------------------------------------------
+[2026-06-30 00:37:52] TO: 918495036597
+MESSAGE: Hello Ranjith,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-472A
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Yeshwanthpur (09:45 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-472A
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-30 00:37:52] TO: 918495036597
+TEMPLATE: booking_confirmation
+PARAMS: ["Ranjith","KT-20260624-472A","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Yeshwanthpur (09:45 PM)"]
+--------------------------------------------------
+[2026-06-30 00:37:59] TO: 918310543435
+MESSAGE: Hello Nithya YK,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260624-DFD4
+🌄 Trek: Kodaikanal Trip From Bangalore
+🗓️ Date: 26 Jun 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Gorguntepalya (09:30 PM)
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260624-DFD4
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-06-30 00:37:59] TO: 918310543435
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithya YK","KT-20260624-DFD4","Kodaikanal Trip From Bangalore","26 Jun 2026","1 Person(s)","\u20b91.00","Gorguntepalya (09:30 PM)"]
+--------------------------------------------------
+[2026-07-02 19:52:10] TO: 916362887202
+MESSAGE: Hello Sushmitha V,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-03 15:10:40] TO: 918618665180
+MESSAGE: Hello GAGAN G K,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-04 03:47:19] TO: 918951221179
+MESSAGE: New contact message from Clay Rhea (7753664112):
+Subject: Daily seo backlinks for karnatakatrekkers.com
+Message: Howdy,
+Dailyseolinks.com - we provide daily backlinks and expand google appearance every day:
+
++ 1,000+ backlinks daily
++ Organic google clicks
++ Plans as low as $1
++ Up to 85% discounts:
+
+https://dailyseolinks.com/sales
+
+DailySeoLinks.com - daily seo backlinks to increase your seo rankings everyday
+--------------------------------------------------
+[2026-07-04 18:01:12] TO: 918861254357
+MESSAGE: Hello Dechamma,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-09 22:22:39] TO: 918184959711
+MESSAGE: Hello Akhil,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-10 01:55:12] TO: 918951221179
+MESSAGE: New contact message from Katiyar ():
+Subject: Get Your Website on Google’s First Page
+Message: Hello http://karnatakatrekkers.com,
+ 
+I hope you’re doing well. I came across your business online and thought you might be interested in improving your visibility and traffic on search engines.
+ 
+We specialize in helping businesses strengthen their online presence through effective SEO strategies.
+ 
+Once you share your target keywords and target market, I’ll send a full proposal.
+ 
+Warm regards,
+Aman
+--------------------------------------------------
+[2026-07-10 21:26:40] TO: 919880189843
+MESSAGE: Hello Nowshad,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-10 21:29:35] TO: 919880189843
+MESSAGE: Hello Nowshad,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260710-F856
+🌄 Trek: Kunti Betta Sunrise Trek From Bangalore
+🗓️ Date: 11 Jul 2026
+🎒 Trekkers: 6 Person(s)
+💵 Amount Paid: ₹1,194.00
+📍 Pick-up Point: Own Transport Selected
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260710-F856
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-07-10 21:29:35] TO: 919880189843
+TEMPLATE: booking_confirmation
+PARAMS: ["Nowshad","KT-20260710-F856","Kunti Betta Sunrise Trek From Bangalore","11 Jul 2026","6 Person(s)","\u20b91,194.00","Own Transport Selected"]
+--------------------------------------------------
+[2026-07-11 13:04:25] TO: 917389210961
+MESSAGE: Hello Kavya,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-11 14:09:34] TO: 919900426557
+MESSAGE: Hello Ranjan Rao,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-11 19:50:51] TO: 919606539150
+MESSAGE: Hello Nithin,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-11 20:17:43] TO: 919606539150
+MESSAGE: Hello Nithin,
+
+🎉 Booking Confirmed! Your adventure with Karnataka Trekkers is booked successfully.
+
+📄 Booking No: KT-20260711-1233
+🌄 Trek: Coorg Trip From Bangalore
+🗓️ Date: 31 Jul 2026
+🎒 Trekkers: 1 Person(s)
+💵 Amount Paid: ₹1.00
+📍 Pick-up Point: Own Transport Selected
+
+Download invoice details: https://karnatakatrekkers.com/booking/invoice.php?booking_no=KT-20260711-1233
+
+Get ready for an epic trail experience!
+
+Warm regards,
+Team Karnataka Trekkers 🏔️
+--------------------------------------------------
+[2026-07-11 20:17:43] TO: 919606539150
+TEMPLATE: booking_confirmation
+PARAMS: ["Nithin","KT-20260711-1233","Coorg Trip From Bangalore","31 Jul 2026","1 Person(s)","\u20b91.00","Own Transport Selected"]
+--------------------------------------------------
+[2026-07-12 22:43:10] TO: 08887828518
+MESSAGE: Hello ROHIT KUMAR,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-15 13:03:32] TO: 917406811604
+MESSAGE: Hello shon noronha,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-16 23:10:52] TO: 919880173610
+MESSAGE: Hello Manu Krishnan P M,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-17 19:22:58] TO: 918660031528
+MESSAGE: Hello Pramod R,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-19 22:08:21] TO: 918296672865
+MESSAGE: Hello K Amruta,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-20 11:37:16] TO: 918951221179
+MESSAGE: New contact message from Leena Cristane (5874123694):
+Subject: Study MBBS in Vietnam at Buon Ma Thuot Medical University. Affordable, English-medium, NMC-approved. Apply now!
+Message: Invi Edutech is a trusted overseas education consultancy helping Indian students pursue MBBS in Vietnam. We provide end-to-end admission support, visa assistance, accommodation, English-medium university admissions, and career guidance at leading medical universities in Vietnam.
+--------------------------------------------------
+[2026-07-21 00:04:59] TO: 918197173145
+MESSAGE: Hello Suhas Gejji,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-21 04:49:40] TO: 916282430043
+MESSAGE: Hello Sreejith,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-21 21:34:01] TO: 06360025174
+MESSAGE: Hello Pranathi S,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-22 09:48:46] TO: 919900145222
+MESSAGE: Hello Phirchand BK,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-07-26 00:25:06] TO: 918133948684
+MESSAGE: Hello Durlov Jyoti Buragohain,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-01 09:34:21] TO: 918073442233
+MESSAGE: Hello Rachana,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-01 21:10:33] TO: 916361939240
+MESSAGE: Hello Rahul N M,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-02 12:06:23] TO: 918056058106
+MESSAGE: Hello V B Rakesh Kumar,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-03 11:08:44] TO: 917338507028
+MESSAGE: Hello GAGANDEEP GM,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-03 17:56:09] TO: 919379544009
+MESSAGE: Hello Nitin Verma,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-04 20:12:27] TO: 09490689562
+MESSAGE: Hello manish raj,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-05 21:44:51] TO: 918955623890
+MESSAGE: Hello Sriram Hegde,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-05 23:34:21] TO: 918298799555
+MESSAGE: Hello Raghib,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-08 12:53:39] TO: 919353217800
+MESSAGE: Hello Shreyas G,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-10 18:12:20] TO: 919916662811
+MESSAGE: Hello ANSHUL RAMESH,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-18 16:57:32] TO: 918105824987
+MESSAGE: Hello Ravikiran Jigajinni,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-20 19:25:11] TO: 918105278708
+MESSAGE: Hello Sanjana Kadlaskar,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-21 15:49:25] TO: 09964456592
+MESSAGE: Hello PRAMUKH M BHARADWAJ,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-28 13:05:10] TO: 916362363689
+MESSAGE: Hello Sinchana S,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-28 21:00:29] TO: 916360202128
+MESSAGE: Hello Aryan AB,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-28 21:11:37] TO: 919903877707
+MESSAGE: Hello Tanishk Nakhat,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-30 21:25:48] TO: 919015468231
+MESSAGE: Hello Shobhit Sharma,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
+[2026-08-31 08:49:34] TO: 919606539150
+MESSAGE: Hello fsdghjyukijhgfdsadfghjyukilkjhygrfde,
+Welcome to Karnataka Trekkers! 🌄
+Your account has been registered successfully.
+Explore our latest trails and book your next adventure with us.
+
+Happy Trekking,
+Team Karnataka Trekkers
+--------------------------------------------------
