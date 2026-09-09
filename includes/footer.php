@@ -103,21 +103,27 @@ require_once __DIR__ . '/config.php';
     </div>
 </footer>
 
-<!-- Secondary Stylesheets for Below-the-Fold Content -->
-<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css?v=5.3.3">
-<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.0.0">
-<link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.0.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap">
+<!-- Secondary Stylesheets for Below-the-Fold Content (Asynchronous Non-Blocking Load) -->
+<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript>
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.0">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+</noscript>
 
 <!-- JS dependencies: jQuery and Bootstrap Bundle -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
-<script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js?v=5.3.3" defer></script>
+<script src="<?php echo SITE_URL; ?>/assets/js/bootstrap.bundle.min.js?v=5.3.3" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js" defer></script>
 
 <!-- Global App JS -->
-<script src="<?php echo SITE_URL; ?>/assets/js/app.js?v=2.0.0" defer></script>
+<script src="<?php echo SITE_URL; ?>/assets/js/app.js?v=2.1.0" defer></script>
 
 <?php
 // Fetch active treks for callback modal preferred trek list
@@ -249,64 +255,65 @@ window.addEventListener('DOMContentLoaded', function() {
             sessionStorage.setItem('kt_callback_dismissed', '1');
         });
 
-    $('#callbackRequestForm').on('submit', function(e) {
-        e.preventDefault();
-        
-        var form = $(this);
-        var submitBtn = $('#btn_submit_callback');
-        var successAlert = $('#callback_success_alert');
-        var errorAlert = $('#callback_error_alert');
-        
-        // Client side phone validation
-        var phoneInput = $('#callback_phone').val().replace(/[^0-9]/g, '');
-        if (phoneInput.length === 11 && phoneInput.startsWith('0')) {
-            phoneInput = phoneInput.substring(1);
-        } else if (phoneInput.length === 12 && phoneInput.startsWith('91')) {
-            phoneInput = phoneInput.substring(2);
-        }
-        if (phoneInput.length !== 10) {
-            errorAlert.text('Please enter a valid 10-digit mobile number.').removeClass('d-none');
-            successAlert.addClass('d-none');
-            return;
-        }
-        
-        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Submitting...');
-        
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    sessionStorage.setItem('kt_callback_submitted', '1');
-                    successAlert.text(response.message).removeClass('d-none');
-                    errorAlert.addClass('d-none');
-                    form.find('input, select, textarea').not('[type="hidden"]').val('');
-                    
-                    // Reset submit button
-                    submitBtn.html('<i class="fas fa-check me-1"></i>Submitted!').prop('disabled', true);
-                    
-                    // Close modal after a delay
-                    setTimeout(function() {
-                        var modalEl = document.getElementById('callbackModal');
-                        var modalInstance = bootstrap.Modal.getInstance(modalEl);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                        }
+        $('#callbackRequestForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            var form = $(this);
+            var submitBtn = $('#btn_submit_callback');
+            var successAlert = $('#callback_success_alert');
+            var errorAlert = $('#callback_error_alert');
+            
+            // Client side phone validation
+            var phoneInput = $('#callback_phone').val().replace(/[^0-9]/g, '');
+            if (phoneInput.length === 11 && phoneInput.startsWith('0')) {
+                phoneInput = phoneInput.substring(1);
+            } else if (phoneInput.length === 12 && phoneInput.startsWith('91')) {
+                phoneInput = phoneInput.substring(2);
+            }
+            if (phoneInput.length !== 10) {
+                errorAlert.text('Please enter a valid 10-digit mobile number.').removeClass('d-none');
+                successAlert.addClass('d-none');
+                return;
+            }
+            
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Submitting...');
+            
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        sessionStorage.setItem('kt_callback_submitted', '1');
+                        successAlert.text(response.message).removeClass('d-none');
+                        errorAlert.addClass('d-none');
+                        form.find('input, select, textarea').not('[type="hidden"]').val('');
+                        
+                        // Reset submit button
+                        submitBtn.html('<i class="fas fa-check me-1"></i>Submitted!').prop('disabled', true);
+                        
+                        // Close modal after a delay
+                        setTimeout(function() {
+                            var modalEl = document.getElementById('callbackModal');
+                            var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            }
+                            successAlert.addClass('d-none');
+                        }, 2500);
+                    } else {
+                        errorAlert.text(response.message).removeClass('d-none');
                         successAlert.addClass('d-none');
-                    }, 2500);
-                } else {
-                    errorAlert.text(response.message).removeClass('d-none');
+                        submitBtn.html('<i class="fas fa-paper-plane me-1"></i>Request Call Back').prop('disabled', false);
+                    }
+                },
+                error: function() {
+                    errorAlert.text('Error submitting request. Please try again.').removeClass('d-none');
                     successAlert.addClass('d-none');
                     submitBtn.html('<i class="fas fa-paper-plane me-1"></i>Request Call Back').prop('disabled', false);
                 }
-            },
-            error: function() {
-                errorAlert.text('Error submitting request. Please try again.').removeClass('d-none');
-                successAlert.addClass('d-none');
-                submitBtn.html('<i class="fas fa-paper-plane me-1"></i>Request Call Back').prop('disabled', false);
-            }
+            });
         });
     }
     initCallbackModal();

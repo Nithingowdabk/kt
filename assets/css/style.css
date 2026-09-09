@@ -1327,16 +1327,18 @@ a, button, .btn, [role="button"] {
 
 .whatsapp-float-btn i {
     font-size: 1.35rem;
-    animation: waPulse 2.5s infinite;
+    display: inline-block;
+    will-change: transform;
+    transform: translateZ(0);
+    animation: waPulse 3s ease-in-out infinite;
 }
 
 @keyframes waPulse {
-    0% { transform: scale(1); }
-    15% { transform: scale(1.15) rotate(-10deg); }
-    30% { transform: scale(1.15) rotate(10deg); }
-    45% { transform: scale(1.15) rotate(-10deg); }
-    60% { transform: scale(1); }
-    100% { transform: scale(1); }
+    0%, 100% { transform: scale3d(1, 1, 1); }
+    15% { transform: scale3d(1.15, 1.15, 1) rotate(-8deg); }
+    30% { transform: scale3d(1.15, 1.15, 1) rotate(8deg); }
+    45% { transform: scale3d(1.15, 1.15, 1) rotate(-8deg); }
+    60% { transform: scale3d(1, 1, 1); }
 }
 
 @media (max-width: 768px) {
@@ -1837,6 +1839,10 @@ a, button, .btn, [role="button"] {
     display: flex;
     width: max-content;
     animation: marquee 40s linear infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 @keyframes marquee {
@@ -1881,6 +1887,7 @@ a, button, .btn, [role="button"] {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
     box-sizing: border-box;
+    contain: paint layout;
 }
 
 .highlight-marquee-card:hover {
@@ -2072,6 +2079,10 @@ a, button, .btn, [role="button"] {
     width: max-content;
     animation: detailsMarqueeScroll 40s linear infinite;
     align-items: center;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 @keyframes detailsMarqueeScroll {
@@ -3382,6 +3393,10 @@ body {
     display: inline-block;
     padding-left: 100%;
     animation: announcementMarqueeLoop 30s linear infinite;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 .announcement-marquee-text {
@@ -3396,6 +3411,15 @@ body {
     }
     100% {
         transform: translate3d(-100%, 0, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .highlights-marquee-track,
+    .details-amenities-track,
+    .announcement-marquee-track,
+    .whatsapp-float-btn i {
+        animation: none !important;
     }
 }
 

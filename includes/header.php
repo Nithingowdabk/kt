@@ -86,6 +86,14 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     }
     </script>
     
+    <!-- Preconnect to external asset CDNs -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+
+    <!-- Preload Critical Brand Font -->
+    <link rel="preload" href="<?php echo SITE_URL; ?>/assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin>
+
     <!-- Preload Critical Hero LCP Image for Homepage -->
     <?php 
     $current_script = basename($_SERVER['PHP_SELF']);
@@ -102,8 +110,7 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             font-style: normal;
             font-weight: 100 900;
             font-display: swap;
-            src: url('<?php echo SITE_URL; ?>/assets/fonts/outfit.woff2') format('woff2'),
-                 url('https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtq.woff2') format('woff2');
+            src: url('<?php echo SITE_URL; ?>/assets/fonts/outfit.woff2') format('woff2');
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
         :root {
@@ -288,6 +295,7 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             color: var(--white);
             text-align: center;
             overflow: hidden;
+            contain: layout;
         }
         .hero-bg-wrapper {
             position: absolute;
@@ -297,6 +305,18 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             height: 100%;
             z-index: 0;
             overflow: hidden;
+            pointer-events: none;
+        }
+        .hero-bg-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(17, 34, 17, 0.45) 0%, rgba(17, 34, 17, 0.65) 100%);
+            z-index: 1;
+            pointer-events: none;
         }
         .hero-bg-wrapper picture,
         .hero-bg-media {
@@ -305,7 +325,6 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             object-fit: cover;
             object-position: center;
             display: block;
-            filter: brightness(0.55);
         }
         .hero-slider-section .hero-content {
             position: relative;

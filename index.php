@@ -101,7 +101,7 @@ try {
         <picture>
             <source media="(max-width: 768px)" srcset="<?php echo SITE_URL; ?>/assets/images/hero-bg-mobile.webp" type="image/webp">
             <source srcset="<?php echo SITE_URL; ?>/assets/images/hero-bg.webp" type="image/webp">
-            <img src="<?php echo SITE_URL; ?>/assets/images/hero-bg.jpg" alt="Explore Karnataka Treks" width="1920" height="1080" fetchpriority="high" decoding="async" class="hero-bg-media">
+            <img src="<?php echo SITE_URL; ?>/assets/images/hero-bg.jpg" alt="Explore Karnataka Treks" width="1024" height="1024" fetchpriority="high" decoding="async" class="hero-bg-media">
         </picture>
     </div>
     <div class="container hero-content position-relative">
