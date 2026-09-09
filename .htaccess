@@ -89,5 +89,26 @@ RewriteRule ^(.*?)/?$ $1.php [QSA,L]
     <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|avif|js|css|swf|woff2|woff|ttf|svg)$">
         Header set Cache-Control "max-age=31536000, public, immutable"
     </FilesMatch>
+
+    # Short-lived cache for HTML/PHP pages (10 minutes browser cache, must revalidate)
+    <FilesMatch "\.(html|htm|php)$">
+        Header set Cache-Control "public, max-age=600, must-revalidate"
+    </FilesMatch>
+
+    # Enable Keep-Alive (reduces connection overhead)
+    Header set Connection keep-alive
+
+    # Vary header for proper CDN/proxy caching
+    Header append Vary Accept-Encoding
+
+    # Security: X-Content-Type-Options to prevent MIME sniffing
+    Header set X-Content-Type-Options "nosniff"
+
+    # CORS for fonts loaded from CDNs
+    <FilesMatch "\.(woff2|woff|ttf|eot|svg)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
 </IfModule>
 
+# Enable ETag (helps with conditional requests / 304 responses)
+FileETag MTime Size

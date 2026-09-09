@@ -7,6 +7,13 @@ require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/auth.php';
 
+// Disable error output in production (errors before HTML destroy TTFB)
+if (!$isLocalHost) {
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(0);
+}
+
 // Load dynamic default settings from database
 $default_title = get_setting('seo_default_title', DEFAULT_META_TITLE);
 $default_desc = get_setting('seo_default_desc', DEFAULT_META_DESC);
@@ -152,6 +159,14 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             margin-right: -7.5px;
             margin-left: -7.5px;
         }
+        /* Bootstrap default column behavior (prevents CLS when CSS loads async) */
+        .row > * {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            padding-right: 7.5px;
+            padding-left: 7.5px;
+        }
         .g-2 {
             --bs-gutter-x: 0.5rem;
             --bs-gutter-y: 0.5rem;
@@ -282,6 +297,48 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             justify-content: center;
             text-decoration: none;
         }
+        /* Hamburger Toggle Button (visible on mobile above-fold) */
+        .navbar-toggler {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px;
+            font-size: 1.25rem;
+            background-color: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+        .navbar-toggler-icon {
+            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: middle;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100%;
+        }
+        /* Offcanvas initially hidden (prevents flash before Bootstrap JS loads) */
+        .offcanvas:not(.show) {
+            transform: translateX(-100%);
+            visibility: hidden;
+        }
+        .offcanvas {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1045;
+            width: 300px;
+            background-color: #fff;
+            transition: transform 0.3s ease-in-out;
+        }
+        /* Additional gap utility (used in mobile actions bar) */
+        .gap-2 { gap: 0.5rem !important; }
+        .ms-auto { margin-left: auto !important; }
+        .flex-shrink-0 { flex-shrink: 0 !important; }
+        .text-nowrap { white-space: nowrap !important; }
+        .text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .text-decoration-none { text-decoration: none !important; }
 
         /* Hero Section */
         .hero-slider-section {
@@ -469,19 +526,28 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
         }
     </style>
 
-    <!-- Core Application Stylesheets (Pre-parsed in Head for Zero CLS) -->
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2">
+    <!-- Non-Blocking Stylesheets (media="print" trick loads async, onload swaps to screen) -->
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" media="print" onload="this.media='all'">
     <noscript>
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
     </noscript>
 
     <?php if (isset($extra_head)) echo $extra_head; ?>
 </head>
+<?php
+// Flush the <head> to browser immediately so it can start preloading resources
+// while PHP continues processing the rest of the page
+if (function_exists('ob_flush')) { @ob_flush(); }
+@flush();
+?>
 <body>
 <?php include_once __DIR__ . '/navbar.php'; ?>
 <main id="main-content">
