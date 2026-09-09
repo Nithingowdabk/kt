@@ -97,9 +97,7 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     <!-- Preload Critical Hero LCP Image for Homepage -->
     <?php 
     $current_script = basename($_SERVER['PHP_SELF']);
-    $req_uri = $_SERVER['REQUEST_URI'] ?? '/';
-    $is_homepage = ($current_script === 'index.php' || $req_uri === '/' || strpos($req_uri, '/index.php') !== false || parse_url($req_uri, PHP_URL_PATH) === '/' || parse_url($req_uri, PHP_URL_PATH) === '/KarnatakaTrekkers/');
-    if ($is_homepage): 
+    if ($current_script === 'index.php'): 
     ?>
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg-mobile.webp" media="(max-width: 768px)" type="image/webp" fetchpriority="high">
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg.webp" media="(min-width: 769px)" type="image/webp" fetchpriority="high">
@@ -297,6 +295,7 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             color: var(--white);
             text-align: center;
             overflow: hidden;
+            contain: layout;
         }
         .hero-bg-wrapper {
             position: absolute;
@@ -458,17 +457,11 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
         }
         @font-face {
             font-family: 'Font Awesome 6 Free';
-            font-style: normal;
-            font-weight: 900;
             font-display: swap;
-            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2') format('woff2');
         }
         @font-face {
             font-family: 'Font Awesome 6 Brands';
-            font-style: normal;
-            font-weight: 400;
             font-display: swap;
-            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2') format('woff2');
         }
         @media (max-width: 575px) {
             .hero-content h1 { font-size: 1.6rem !important; line-height: 1.25; }
