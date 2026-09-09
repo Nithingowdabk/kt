@@ -433,6 +433,18 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             align-items: stretch;
             width: 100%;
         }
+        .input-group > .form-control,
+        .input-group > .form-select {
+            position: relative;
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+        .input-group > :not(:first-child):not(.dropdown-menu) {
+            margin-left: -1px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
         .input-group-text {
             display: flex;
             align-items: center;
@@ -446,6 +458,8 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             background-color: #e9ecef;
             border: 1px solid #ced4da;
             border-radius: 0.375rem 0 0 0.375rem;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
         }
         .form-control, .form-select {
             display: block;
@@ -518,14 +532,18 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
                 min-height: 480px;
                 padding: 90px 0 50px;
             }
+            .hero-content {
+                padding: 0 16px !important;
+            }
             .hero-content h1 {
                 font-size: 1.85rem;
-                line-height: 1.3;
-                margin-bottom: 15px;
+                line-height: 1.3 !important;
+                margin-bottom: 20px !important;
             }
             .hero-content p {
-                font-size: 1rem;
-                margin-bottom: 20px;
+                font-size: 1rem !important;
+                line-height: 1.6 !important;
+                margin-bottom: 24px !important;
             }
             .hero-search-box {
                 padding: 15px;
@@ -542,8 +560,8 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             }
         }
         @media (max-width: 575px) {
-            .hero-content h1 { font-size: 1.6rem !important; line-height: 1.25; }
-            .hero-content p { font-size: 0.9rem; }
+            .hero-content h1 { font-size: 1.6rem !important; line-height: 1.25 !important; margin-bottom: 20px !important; }
+            .hero-content p { font-size: 1rem !important; line-height: 1.6 !important; margin-bottom: 24px !important; }
         }
 
         /* Experience Highlights Marquee (Critical CSS to eliminate CLS) */

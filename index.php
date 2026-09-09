@@ -161,6 +161,8 @@ try {
     -webkit-overflow-scrolling: touch;
     gap: 1.5rem;
     padding: 10px 5px 20px;
+    scroll-padding-left: 5px;
+    scroll-padding-inline: 5px;
 }
 /* Hide default scrollbars and style customized thin scrollbar */
 .scroll-row-container::-webkit-scrollbar {
@@ -191,6 +193,8 @@ try {
 @media (max-width: 767.98px) {
     .scroll-row-container {
         scroll-snap-type: x mandatory;
+        scroll-padding-left: 5px;
+        scroll-padding-inline: 5px;
     }
     .scroll-row-card {
         flex: 0 0 260px !important;
