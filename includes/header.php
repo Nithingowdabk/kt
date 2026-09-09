@@ -120,6 +120,15 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             src: url('<?php echo SITE_URL; ?>/assets/fonts/outfit.woff2') format('woff2');
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
+        /* Fallback font with matched metrics to eliminate font-swap CLS */
+        @font-face {
+            font-family: 'Outfit-Fallback';
+            src: local('Roboto'), local('Segoe UI'), local('Arial');
+            ascent-override: 95%;
+            descent-override: 25%;
+            line-gap-override: 0%;
+            size-adjust: 100%;
+        }
         :root {
             --primary-color: #2D5A27;
             --primary-hover: #1E3F1A;
@@ -133,8 +142,8 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             --border-color: #E2E8F0;
             --card-shadow: 0 10px 30px rgba(17, 34, 17, 0.08);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-heading: 'Outfit', 'Outfit-Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Outfit', 'Outfit-Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         *, ::after, ::before { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -145,38 +154,40 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
         }
-        /* Grid System Essentials */
+        /* Grid System Essentials (Bootstrap 5 pixel-perfect to prevent CLS) */
         .container, .container-fluid {
             width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
             margin-right: auto;
             margin-left: auto;
         }
+        @media (min-width: 576px) { .container { max-width: 540px; } }
+        @media (min-width: 768px) { .container { max-width: 720px; } }
+        @media (min-width: 992px) { .container { max-width: 960px; } }
+        @media (min-width: 1200px) { .container { max-width: 1140px; } }
+        @media (min-width: 1400px) { .container { max-width: 1320px; } }
+
         .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
             display: flex;
             flex-wrap: wrap;
-            margin-right: -7.5px;
-            margin-left: -7.5px;
+            margin-top: calc(-1 * var(--bs-gutter-y));
+            margin-right: calc(-0.5 * var(--bs-gutter-x));
+            margin-left: calc(-0.5 * var(--bs-gutter-x));
         }
-        /* Bootstrap default column behavior (prevents CLS when CSS loads async) */
         .row > * {
             flex-shrink: 0;
             width: 100%;
             max-width: 100%;
-            padding-right: 7.5px;
-            padding-left: 7.5px;
+            padding-right: calc(var(--bs-gutter-x) * 0.5);
+            padding-left: calc(var(--bs-gutter-x) * 0.5);
+            margin-top: var(--bs-gutter-y);
         }
         .g-2 {
             --bs-gutter-x: 0.5rem;
             --bs-gutter-y: 0.5rem;
-            margin-right: calc(-0.5 * var(--bs-gutter-x));
-            margin-left: calc(-0.5 * var(--bs-gutter-x));
-        }
-        .g-2 > * {
-            padding-right: calc(var(--bs-gutter-x) * 0.5);
-            padding-left: calc(var(--bs-gutter-x) * 0.5);
-            margin-top: var(--bs-gutter-y);
         }
         .justify-content-center { justify-content: center !important; }
         .position-relative { position: relative !important; }
@@ -352,7 +363,6 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             color: var(--white);
             text-align: center;
             overflow: hidden;
-            contain: layout;
         }
         .hero-bg-wrapper {
             position: absolute;
@@ -459,6 +469,23 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
         .border-0 { border: 0 !important; }
         .bg-white { background-color: #fff !important; }
         .text-success { color: #198754 !important; }
+        /* Accessible touch targets matching responsive.css (prevents CLS on input height) */
+        input, select, textarea, button, .btn {
+            min-height: 46px;
+        }
+        .input-group > .input-group-text {
+            min-height: 46px;
+        }
+        .hero-search-box .input-group-text {
+            min-width: 44px;
+            justify-content: center;
+        }
+        .hero-search-box .input-group-text i {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+        }
         .btn {
             display: inline-block;
             font-weight: 400;
@@ -512,17 +539,114 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
                 max-width: 100%;
             }
         }
-        @font-face {
-            font-family: 'Font Awesome 6 Free';
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Font Awesome 6 Brands';
-            font-display: swap;
-        }
         @media (max-width: 575px) {
             .hero-content h1 { font-size: 1.6rem !important; line-height: 1.25; }
             .hero-content p { font-size: 0.9rem; }
+        }
+
+        /* Experience Highlights Marquee (Critical CSS to eliminate CLS) */
+        .highlights-marquee-section {
+            background-color: #FCFDFD;
+            padding: 30px 0;
+            overflow: hidden;
+            width: 100%;
+        }
+        .highlights-marquee-container {
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            position: relative;
+        }
+        .highlights-marquee-track {
+            display: flex;
+            width: max-content;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+        }
+        .highlight-marquee-card {
+            background: #FFFFFF;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            min-width: 260px;
+            max-width: 260px;
+            height: 110px;
+            flex: 0 0 auto;
+            margin: 0 15px;
+            text-align: center;
+            border: none;
+            box-sizing: border-box;
+        }
+        .highlight-marquee-icon {
+            font-size: 44px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+        }
+        .highlight-marquee-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #2C3E50;
+            margin: 0;
+            font-family: var(--font-heading);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        @media (max-width: 768px) {
+            .highlights-marquee-section {
+                padding: 15px 0;
+            }
+            .highlight-marquee-card {
+                width: 110px;
+                min-width: 110px;
+                max-width: 110px;
+                height: 85px;
+                padding: 10px;
+                margin: 0 8px;
+                gap: 6px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            }
+            .highlight-marquee-icon {
+                font-size: 26px;
+                height: 30px;
+            }
+            .highlight-marquee-title {
+                font-size: 13px;
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                line-height: 1.2;
+            }
+        }
+        .border-bottom { border-bottom: 1px solid #dee2e6 !important; }
+        .shadow-sm { box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075) !important; }
+
+        /* Font Awesome swap font-display */
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-style: normal;
+            font-weight: 900;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Font Awesome 6 Brands';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2') format('woff2');
         }
     </style>
 
@@ -543,9 +667,10 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     <?php if (isset($extra_head)) echo $extra_head; ?>
 </head>
 <?php
-// Flush the <head> to browser immediately so it can start preloading resources
-// while PHP continues processing the rest of the page
-if (function_exists('ob_flush')) { @ob_flush(); }
+// Flush <head> early so browser starts fetching preloads immediately
+if (ob_get_level() > 0) {
+    @ob_flush();
+}
 @flush();
 ?>
 <body>

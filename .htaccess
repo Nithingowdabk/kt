@@ -95,8 +95,6 @@ RewriteRule ^(.*?)/?$ $1.php [QSA,L]
         Header set Cache-Control "public, max-age=600, must-revalidate"
     </FilesMatch>
 
-    # Enable Keep-Alive (reduces connection overhead)
-    Header set Connection keep-alive
 
     # Vary header for proper CDN/proxy caching
     Header append Vary Accept-Encoding
