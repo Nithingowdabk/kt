@@ -455,11 +455,30 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
                 max-width: 100%;
             }
         }
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Font Awesome 6 Brands';
+            font-display: swap;
+        }
         @media (max-width: 575px) {
             .hero-content h1 { font-size: 1.6rem !important; line-height: 1.25; }
             .hero-content p { font-size: 0.9rem; }
         }
     </style>
+
+    <!-- Core Application Stylesheets (Pre-parsed in Head for Zero CLS) -->
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    </noscript>
 
     <?php if (isset($extra_head)) echo $extra_head; ?>
 </head>

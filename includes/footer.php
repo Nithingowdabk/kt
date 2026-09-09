@@ -12,7 +12,7 @@ require_once __DIR__ . '/config.php';
                 <a href="<?php echo SITE_URL; ?>/index.php" class="d-inline-flex align-items-center gap-2 text-decoration-none text-white mb-2" aria-label="Karnataka Trekkers Home">
                     <picture>
                         <source srcset="<?php echo SITE_URL; ?>/assets/images/LOGO.webp" type="image/webp">
-                        <img src="<?php echo SITE_URL; ?>/assets/images/LOGO.png" alt="Karnataka Trekkers Logo" width="46" height="46" style="max-height: 46px; width: auto; background-color: #ffffff; padding: 4px 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                        <img src="<?php echo SITE_URL; ?>/assets/images/LOGO.png" alt="Karnataka Trekkers Logo" width="46" height="46" style="width: 46px; height: 46px; object-fit: contain; aspect-ratio: 1/1; background-color: #ffffff; padding: 4px 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
                     </picture>
                     <span class="fs-4 fw-bold"><?php echo SITE_NAME; ?></span>
                 </a>
@@ -103,27 +103,13 @@ require_once __DIR__ . '/config.php';
     </div>
 </footer>
 
-<!-- Secondary Stylesheets for Below-the-Fold Content (Asynchronous Non-Blocking Load) -->
-<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.0">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-</noscript>
-
-<!-- JS dependencies: jQuery and Bootstrap Bundle -->
+<!-- JS dependencies: jQuery and Bootstrap Bundle (Deferred for Zero Main-Thread Blocking) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
 <script src="<?php echo SITE_URL; ?>/assets/js/bootstrap.bundle.min.js?v=5.3.3" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js" defer></script>
 
 <!-- Global App JS -->
-<script src="<?php echo SITE_URL; ?>/assets/js/app.js?v=2.1.0" defer></script>
+<script src="<?php echo SITE_URL; ?>/assets/js/app.js?v=2.1.2" defer></script>
 
 <?php
 // Fetch active treks for callback modal preferred trek list
