@@ -3,6 +3,7 @@
  * Karnataka Trekkers - Media Gallery
  */
 $page_title = "Scenic Trekking Gallery";
+$use_glightbox = true;
 require_once __DIR__ . '/includes/header.php';
 
 try {

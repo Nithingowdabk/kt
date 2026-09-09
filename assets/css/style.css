@@ -1887,7 +1887,6 @@ a, button, .btn, [role="button"] {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
     box-sizing: border-box;
-    contain: paint layout;
 }
 
 .highlight-marquee-card:hover {

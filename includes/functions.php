@@ -237,7 +237,24 @@ function secure_image_upload($file_array, $target_subfolder = '') {
     }
 
     // 7. Perform Upload
-    if (move_uploaded_file($file_tmp, $target_dir . $new_name)) {
+    $destination = $target_dir . $new_name;
+    if (move_uploaded_file($file_tmp, $destination)) {
+        // Automatically generate optimized responsive WebP variants if GD is available
+        if (extension_loaded('gd')) {
+            $base_name = pathinfo($new_name, PATHINFO_FILENAME);
+            $full_webp = $target_dir . $base_name . '.webp';
+            $webp_480 = $target_dir . $base_name . '_480.webp';
+            $webp_320 = $target_dir . $base_name . '_320.webp';
+
+            // Generate full webp if original is not webp
+            if ($ext !== 'webp' && !file_exists($full_webp)) {
+                process_and_optimize_image($destination, $full_webp, 1200, 800, 85);
+            }
+            // Generate 480w and 320w responsive variants
+            process_and_optimize_image($destination, $webp_480, 480, 240, 80);
+            process_and_optimize_image($destination, $webp_320, 320, 160, 80);
+        }
+
         $relative_path = 'assets/uploads/';
         if (!empty($target_subfolder)) {
             $relative_path .= trim($target_subfolder, '/') . '/';

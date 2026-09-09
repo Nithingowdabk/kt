@@ -103,8 +103,10 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
 
     <!-- Preload Critical Hero LCP Image for Homepage -->
     <?php 
-    $current_script = basename($_SERVER['PHP_SELF']);
-    if ($current_script === 'index.php'): 
+    $current_script = basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
+    $req_uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $is_home = ($current_script === 'index.php' || empty($current_script) || $req_uri === '/' || $req_uri === '/index.php');
+    if ($is_home): 
     ?>
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg-mobile.webp" media="(max-width: 768px)" type="image/webp" fetchpriority="high">
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg.webp" media="(min-width: 769px)" type="image/webp" fetchpriority="high">
@@ -652,16 +654,20 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
 
     <!-- Non-Blocking Stylesheets (media="print" trick loads async, onload swaps to screen) -->
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.0" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.0" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <?php if (!empty($use_glightbox)): ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" media="print" onload="this.media='all'">
+    <?php endif; ?>
     <noscript>
         <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
-        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.css?v=2.1.2">
-        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.css?v=2.1.2">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.0">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <?php if (!empty($use_glightbox)): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+        <?php endif; ?>
     </noscript>
 
     <?php if (isset($extra_head)) echo $extra_head; ?>

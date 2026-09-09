@@ -19,14 +19,22 @@ if (isset($trek)):
     
     // Check for optimized WebP variants
     $img_info = pathinfo($featured_img);
-    $webp_card = $img_info['dirname'] . '/' . $img_info['filename'] . '_480.webp';
+    $webp_320 = $img_info['dirname'] . '/' . $img_info['filename'] . '_320.webp';
+    $webp_480 = $img_info['dirname'] . '/' . $img_info['filename'] . '_480.webp';
     $webp_full = $img_info['dirname'] . '/' . $img_info['filename'] . '.webp';
-    $webp_src = null;
-    if (file_exists(__DIR__ . '/../' . $webp_card)) {
-        $webp_src = $webp_card;
-    } elseif (file_exists(__DIR__ . '/../' . $webp_full)) {
-        $webp_src = $webp_full;
+
+    $srcset_entries = [];
+    if (file_exists(__DIR__ . '/../' . $webp_320)) {
+        $srcset_entries[] = SITE_URL . '/' . $webp_320 . ' 320w';
     }
+    if (file_exists(__DIR__ . '/../' . $webp_480)) {
+        $srcset_entries[] = SITE_URL . '/' . $webp_480 . ' 480w';
+    }
+    if (file_exists(__DIR__ . '/../' . $webp_full)) {
+        $srcset_entries[] = SITE_URL . '/' . $webp_full . ' 800w';
+    }
+    $webp_srcset = !empty($srcset_entries) ? implode(', ', $srcset_entries) : null;
+    $webp_fallback = !empty($srcset_entries) ? (file_exists(__DIR__ . '/../' . $webp_320) ? $webp_320 : ($webp_480 ?? $webp_full)) : null;
     
     $card_url = SITE_URL . '/treks/' . ($trek['slug'] ?? '');
     
@@ -57,10 +65,12 @@ if (isset($trek)):
         <div class="trek-card">
             <div class="trek-card-image">
                 <picture>
-                    <?php if ($webp_src): ?>
-                        <source srcset="<?php echo SITE_URL . '/' . $webp_src; ?>" type="image/webp">
+                    <?php if ($webp_srcset): ?>
+                        <source type="image/webp" 
+                                srcset="<?php echo $webp_srcset; ?>" 
+                                sizes="(max-width: 576px) 258px, (max-width: 992px) 40vw, 452px">
                     <?php endif; ?>
-                    <img src="<?php echo SITE_URL . '/' . $featured_img; ?>" alt="<?php echo htmlspecialchars(!empty($trek['image_alt']) ? $trek['image_alt'] : ($trek['title'] ?? '')); ?>" width="452" height="226" loading="lazy" decoding="async">
+                    <img src="<?php echo SITE_URL . '/' . ($webp_fallback ?: $featured_img); ?>" alt="<?php echo htmlspecialchars(!empty($trek['image_alt']) ? $trek['image_alt'] : ($trek['title'] ?? '')); ?>" width="452" height="226" loading="lazy" decoding="async">
                 </picture>
                 <?php if (!empty($trek['difficulty'])): ?>
                     <span class="trek-badge-difficulty <?php echo 'difficulty-' . strtolower($trek['difficulty']); ?>"><?php echo htmlspecialchars($trek['difficulty']); ?></span>
@@ -91,16 +101,16 @@ if (isset($trek)):
         <?php if (is_user_logged_in()): ?>
             <?php if ($is_in_wishlist): ?>
                 <a href="<?php echo SITE_URL; ?>/user/wishlist.php?action=remove&trek_id=<?php echo $trek['id']; ?>" class="wishlist-btn active" title="Remove from Wishlist" aria-label="Remove <?php echo htmlspecialchars($trek['title'] ?? 'trek'); ?> from Wishlist" data-trek-id="<?php echo $trek['id']; ?>">
-                    <i class="fas fa-heart"></i>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 </a>
             <?php else: ?>
                 <a href="<?php echo SITE_URL; ?>/user/wishlist.php?action=add&trek_id=<?php echo $trek['id']; ?>" class="wishlist-btn" title="Add to Wishlist" aria-label="Add <?php echo htmlspecialchars($trek['title'] ?? 'trek'); ?> to Wishlist" data-trek-id="<?php echo $trek['id']; ?>">
-                    <i class="far fa-heart"></i>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 </a>
             <?php endif; ?>
         <?php else: ?>
             <a href="<?php echo SITE_URL; ?>/login.php" class="wishlist-btn" title="Login to save Trek" aria-label="Login to save <?php echo htmlspecialchars($trek['title'] ?? 'trek'); ?> to wishlist">
-                <i class="far fa-heart"></i>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             </a>
         <?php endif; ?>
     </div>

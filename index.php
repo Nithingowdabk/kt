@@ -333,7 +333,7 @@ try {
                     <div class="section-title mb-0 text-start">
                         <h2 class="mb-0 fs-3 fw-bold text-dark"><?php echo htmlspecialchars($cat['category_name']); ?></h2>
                     </div>
-                    <?php if (count($cat_treks) > 8): ?>
+                    <?php if (count($cat_treks) > 6): ?>
                         <a href="<?php echo SITE_URL; ?>/treks/category.php?slug=<?php echo $cat['slug']; ?>" class="text-success fw-bold text-decoration-none hover-underline" aria-label="View all <?php echo htmlspecialchars($cat['category_name']); ?> treks">
                             View All <i class="fas fa-arrow-right ms-1"></i>
                         </a>
@@ -344,7 +344,7 @@ try {
                     <?php 
                     $displayed_count = 0;
                     foreach ($cat_treks as $trek): 
-                        if ($displayed_count >= 8) break;
+                        if ($displayed_count >= 6) break;
                         $displayed_count++;
                         $difficulty_class = 'difficulty-' . strtolower($trek['difficulty'] ?? 'easy');
                         $active_card_price = get_starting_price($trek);

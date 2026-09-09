@@ -246,6 +246,7 @@ if (!function_exists('get_initials')) {
     }
 }
 
+$use_glightbox = true;
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
