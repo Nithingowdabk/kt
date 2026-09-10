@@ -110,57 +110,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (empty($error)) {
-                // Insert Trek
-                $stmt = $db->prepare("INSERT INTO treks (
-                    category_id, title, slug, duration, difficulty, trek_distance, altitude, 
-                    price, offer_price, with_transport_price, with_transport_offer_price,
-                    without_transport_price, without_transport_offer_price,
-                    transport_enabled, own_transport_enabled, own_transport_note, with_transport_note,
-                    description, itinerary, inclusions, exclusions, 
-                    with_transport_inclusions, with_transport_exclusions,
-                    own_transport_inclusions, own_transport_exclusions,
-                    things_to_carry, pickup_points_txt, status, featured, 
-                    meta_title, meta_description, focus_keyphrase, excerpt, image_alt, tags, image
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                // Ensure required columns exist in treks table (auto-migrates missing columns)
+                $trek_col_specs = [
+                    'with_transport_price' => "DECIMAL(10,2) NOT NULL DEFAULT 0.00",
+                    'with_transport_offer_price' => "DECIMAL(10,2) DEFAULT NULL",
+                    'without_transport_price' => "DECIMAL(10,2) NOT NULL DEFAULT 0.00",
+                    'without_transport_offer_price' => "DECIMAL(10,2) DEFAULT NULL",
+                    'transport_enabled' => "TINYINT(1) DEFAULT 1",
+                    'own_transport_enabled' => "TINYINT(1) DEFAULT 1",
+                    'own_transport_note' => "TEXT DEFAULT NULL",
+                    'with_transport_note' => "TEXT DEFAULT NULL",
+                    'with_transport_inclusions' => "TEXT DEFAULT NULL",
+                    'with_transport_exclusions' => "TEXT DEFAULT NULL",
+                    'own_transport_inclusions' => "TEXT DEFAULT NULL",
+                    'own_transport_exclusions' => "TEXT DEFAULT NULL",
+                    'meta_title' => "VARCHAR(150) DEFAULT NULL",
+                    'meta_description' => "VARCHAR(255) DEFAULT NULL",
+                    'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
+                    'excerpt' => "TEXT DEFAULT NULL",
+                    'image_alt' => "VARCHAR(255) DEFAULT NULL",
+                    'tags' => "TEXT DEFAULT NULL"
+                ];
+                $existing_trek_cols = ensure_table_columns($db, 'treks', $trek_col_specs);
 
-                $stmt->execute([
-                    $category_id > 0 ? $category_id : null,
-                    $title,
-                    $slug,
-                    $duration,
-                    $difficulty,
-                    $distance,
-                    $altitude,
-                    $with_transport_price, // fallback legacy
-                    $with_transport_offer_price, // fallback legacy
-                    $with_transport_price,
-                    $with_transport_offer_price,
-                    $without_transport_price,
-                    $without_transport_offer_price,
-                    $transport_enabled,
-                    $own_transport_enabled,
-                    $own_transport_note,
-                    $with_transport_note,
-                    $description,
-                    $itinerary_json,
-                    $with_transport_inclusions, // legacy inclusions fallback
-                    $with_transport_exclusions, // legacy exclusions fallback
-                    $with_transport_inclusions,
-                    $with_transport_exclusions,
-                    $own_transport_inclusions,
-                    $own_transport_exclusions,
-                    $things_to_carry,
-                    $pickup_points_txt,
-                    $status,
-                    $featured,
-                    $meta_title,
-                    $meta_description,
-                    $focus_keyphrase,
-                    $excerpt,
-                    $image_alt,
-                    $tags,
-                    $image
-                ]);
+                $trek_data = [
+                    'category_id' => $category_id > 0 ? $category_id : null,
+                    'title' => $title,
+                    'slug' => $slug,
+                    'duration' => $duration,
+                    'difficulty' => $difficulty,
+                    'trek_distance' => $distance,
+                    'altitude' => $altitude,
+                    'price' => $with_transport_price,
+                    'offer_price' => $with_transport_offer_price,
+                    'description' => $description,
+                    'itinerary' => $itinerary_json,
+                    'inclusions' => $with_transport_inclusions,
+                    'exclusions' => $with_transport_exclusions,
+                    'things_to_carry' => $things_to_carry,
+                    'pickup_points_txt' => $pickup_points_txt,
+                    'status' => $status,
+                    'featured' => $featured,
+                    'image' => $image
+                ];
+
+                if (isset($existing_trek_cols['with_transport_price'])) $trek_data['with_transport_price'] = $with_transport_price;
+                if (isset($existing_trek_cols['with_transport_offer_price'])) $trek_data['with_transport_offer_price'] = $with_transport_offer_price;
+                if (isset($existing_trek_cols['without_transport_price'])) $trek_data['without_transport_price'] = $without_transport_price;
+                if (isset($existing_trek_cols['without_transport_offer_price'])) $trek_data['without_transport_offer_price'] = $without_transport_offer_price;
+                if (isset($existing_trek_cols['transport_enabled'])) $trek_data['transport_enabled'] = $transport_enabled;
+                if (isset($existing_trek_cols['own_transport_enabled'])) $trek_data['own_transport_enabled'] = $own_transport_enabled;
+                if (isset($existing_trek_cols['own_transport_note'])) $trek_data['own_transport_note'] = $own_transport_note;
+                if (isset($existing_trek_cols['with_transport_note'])) $trek_data['with_transport_note'] = $with_transport_note;
+                if (isset($existing_trek_cols['with_transport_inclusions'])) $trek_data['with_transport_inclusions'] = $with_transport_inclusions;
+                if (isset($existing_trek_cols['with_transport_exclusions'])) $trek_data['with_transport_exclusions'] = $with_transport_exclusions;
+                if (isset($existing_trek_cols['own_transport_inclusions'])) $trek_data['own_transport_inclusions'] = $own_transport_inclusions;
+                if (isset($existing_trek_cols['own_transport_exclusions'])) $trek_data['own_transport_exclusions'] = $own_transport_exclusions;
+                if (isset($existing_trek_cols['meta_title'])) $trek_data['meta_title'] = $meta_title;
+                if (isset($existing_trek_cols['meta_description'])) $trek_data['meta_description'] = $meta_description;
+                if (isset($existing_trek_cols['focus_keyphrase'])) $trek_data['focus_keyphrase'] = $focus_keyphrase;
+                if (isset($existing_trek_cols['excerpt'])) $trek_data['excerpt'] = $excerpt;
+                if (isset($existing_trek_cols['image_alt'])) $trek_data['image_alt'] = $image_alt;
+                if (isset($existing_trek_cols['tags'])) $trek_data['tags'] = $tags;
+
+                $col_names = array_keys($trek_data);
+                $placeholders = array_fill(0, count($col_names), '?');
+                $stmt = $db->prepare("INSERT INTO treks (`" . implode('`, `', $col_names) . "`) VALUES (" . implode(', ', $placeholders) . ")");
+                $stmt->execute(array_values($trek_data));
                 
                 $new_trek_id = $db->lastInsertId();
                 $session_token = $_POST['session_token'] ?? '';

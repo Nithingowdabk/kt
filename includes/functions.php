@@ -622,7 +622,72 @@ function sendNaitronsEvent($eventName, array $payload, $externalEventId = null) 
     return $success;
 }
 
+/**
+ * Get existing column names of a database table (lowercased)
+ */
+function get_table_columns($db, $table) {
+    static $columns_cache = [];
+    $clean_table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+    if (isset($columns_cache[$clean_table])) {
+        return $columns_cache[$clean_table];
+    }
+    $columns = [];
+    try {
+        $stmt = $db->query("SHOW COLUMNS FROM `{$clean_table}`");
+        if ($stmt) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $columns[strtolower($row['Field'])] = true;
+            }
+        }
+    } catch (Throwable $e) {
+        // Table might not exist or error
+    }
+    $columns_cache[$clean_table] = $columns;
+    return $columns;
+}
 
+/**
+ * Automatically ensure required columns exist in a database table.
+ * If missing, attempts to run ALTER TABLE to add them.
+ * Also resets cache and returns the refreshed list of columns.
+ */
+function ensure_table_columns($db, $table, array $column_specs) {
+    $clean_table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+    $existing = get_table_columns($db, $clean_table);
+    $modified = false;
 
+    foreach ($column_specs as $col => $definition) {
+        $col_clean = preg_replace('/[^a-zA-Z0-9_]/', '', $col);
+        $col_lower = strtolower($col_clean);
+        if (!isset($existing[$col_lower])) {
+            try {
+                // First try with provided definition (which may include AFTER ...)
+                $db->exec("ALTER TABLE `{$clean_table}` ADD COLUMN `{$col_clean}` {$definition}");
+                $modified = true;
+            } catch (Throwable $e) {
+                // If failed (e.g. AFTER column doesn't exist), try without AFTER
+                try {
+                    $def_clean = preg_replace('/\s+AFTER\s+`?[a-zA-Z0-9_]+`?/i', '', $definition);
+                    $db->exec("ALTER TABLE `{$clean_table}` ADD COLUMN `{$col_clean}` {$def_clean}");
+                    $modified = true;
+                } catch (Throwable $ex) {
+                    // Ignore if restricted user permissions
+                }
+            }
+        }
+    }
 
+    if ($modified) {
+        // Clear cache and reload
+        $stmt = $db->query("SHOW COLUMNS FROM `{$clean_table}`");
+        $refreshed = [];
+        if ($stmt) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $refreshed[strtolower($row['Field'])] = true;
+            }
+        }
+        return $refreshed;
+    }
 
+    return $existing;
+}

@@ -56,6 +56,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($error)) {
             try {
+                // Ensure required SEO columns exist in the database (auto-migrates missing columns)
+                $blog_col_specs = [
+                    'meta_title' => "VARCHAR(150) DEFAULT NULL",
+                    'meta_description' => "VARCHAR(255) DEFAULT NULL",
+                    'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
+                    'excerpt' => "TEXT DEFAULT NULL",
+                    'image_alt' => "VARCHAR(255) DEFAULT NULL",
+                    'tags' => "TEXT DEFAULT NULL"
+                ];
+                $existing_cols = ensure_table_columns($db, 'blogs', $blog_col_specs);
+
+                // Build data array dynamically based on columns present in the database
+                $data = [
+                    'title' => $title,
+                    'slug' => $slug,
+                    'content' => $content,
+                    'author' => $author,
+                    'status' => $status,
+                    'image' => $image
+                ];
+
+                if (isset($existing_cols['meta_title'])) $data['meta_title'] = $meta_title;
+                if (isset($existing_cols['meta_description'])) $data['meta_description'] = $meta_description;
+                if (isset($existing_cols['focus_keyphrase'])) $data['focus_keyphrase'] = $focus_keyphrase;
+                if (isset($existing_cols['excerpt'])) $data['excerpt'] = $excerpt;
+                if (isset($existing_cols['image_alt'])) $data['image_alt'] = $image_alt;
+                if (isset($existing_cols['tags'])) $data['tags'] = $tags;
+
                 if ($id > 0) {
                     // UPDATE MODE
                     // Check slug uniqueness
@@ -63,10 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $slug_check->execute([$slug, $id]);
                     if ($slug_check->fetch()) {
                         $slug .= '-' . rand(10, 99);
+                        $data['slug'] = $slug;
                     }
 
-                    $stmt = $db->prepare("UPDATE blogs SET title = ?, slug = ?, content = ?, author = ?, status = ?, meta_title = ?, meta_description = ?, focus_keyphrase = ?, excerpt = ?, image_alt = ?, tags = ?, image = ? WHERE id = ?");
-                    $stmt->execute([$title, $slug, $content, $author, $status, $meta_title, $meta_description, $focus_keyphrase, $excerpt, $image_alt, $tags, $image, $id]);
+                    $set_clauses = [];
+                    $params = [];
+                    foreach ($data as $col => $val) {
+                        $set_clauses[] = "`{$col}` = ?";
+                        $params[] = $val;
+                    }
+                    $params[] = $id;
+
+                    $stmt = $db->prepare("UPDATE blogs SET " . implode(', ', $set_clauses) . " WHERE id = ?");
+                    $stmt->execute($params);
                     
                     set_flash_message('success', 'Blog article updated successfully.');
                 } else {
@@ -76,10 +113,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $slug_check->execute([$slug]);
                     if ($slug_check->fetch()) {
                         $slug .= '-' . rand(10, 99);
+                        $data['slug'] = $slug;
                     }
 
-                    $stmt = $db->prepare("INSERT INTO blogs (title, slug, content, author, status, meta_title, meta_description, focus_keyphrase, excerpt, image_alt, tags, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->execute([$title, $slug, $content, $author, $status, $meta_title, $meta_description, $focus_keyphrase, $excerpt, $image_alt, $tags, $image]);
+                    $col_names = array_keys($data);
+                    $placeholders = array_fill(0, count($col_names), '?');
+
+                    $stmt = $db->prepare("INSERT INTO blogs (`" . implode('`, `', $col_names) . "`) VALUES (" . implode(', ', $placeholders) . ")");
+                    $stmt->execute(array_values($data));
                     
                     set_flash_message('success', 'Blog article created successfully.');
                 }
