@@ -225,7 +225,7 @@ try {
     }
 
     // 6. Fetch Related Treks (max 3)
-    $related_stmt = $db->prepare("SELECT t.*, c.category_name as category_name, (SELECT image_path FROM trek_gallery WHERE trek_id = t.id AND is_featured = 1 LIMIT 1) as gallery_featured_image FROM treks t LEFT JOIN trek_categories c ON t.category_id = c.id WHERE t.category_id = ? AND t.id != ? AND t.status = 'Active' LIMIT 3");
+    $related_stmt = $db->prepare("SELECT t.*, c.category_name as category_name, (SELECT image_path FROM trek_gallery WHERE trek_id = t.id AND is_featured = 1 LIMIT 1) as gallery_featured_image FROM treks t LEFT JOIN trek_categories c ON t.category_id = c.id WHERE t.category_id = ? AND t.id != ? AND t.status = 'Active' AND (t.is_indexed = 1 OR t.is_indexed IS NULL) LIMIT 3");
     $related_stmt->execute([$trek['category_id'], $trek_id]);
     $related_treks = $related_stmt->fetchAll();
     
@@ -235,7 +235,7 @@ try {
         $exclude_ids = array_merge([$trek_id], array_column($related_treks, 'id'));
         $in_clause = implode(',', array_fill(0, count($exclude_ids), '?'));
         
-        $stmt_fill = $db->prepare("SELECT t.*, c.category_name as category_name, (SELECT image_path FROM trek_gallery WHERE trek_id = t.id AND is_featured = 1 LIMIT 1) as gallery_featured_image FROM treks t LEFT JOIN trek_categories c ON t.category_id = c.id WHERE t.id NOT IN ($in_clause) AND t.status = 'Active' LIMIT $needed");
+        $stmt_fill = $db->prepare("SELECT t.*, c.category_name as category_name, (SELECT image_path FROM trek_gallery WHERE trek_id = t.id AND is_featured = 1 LIMIT 1) as gallery_featured_image FROM treks t LEFT JOIN trek_categories c ON t.category_id = c.id WHERE t.id NOT IN ($in_clause) AND t.status = 'Active' AND (t.is_indexed = 1 OR t.is_indexed IS NULL) LIMIT $needed");
         $stmt_fill->execute($exclude_ids);
         $related_treks = array_merge($related_treks, $stmt_fill->fetchAll());
     }

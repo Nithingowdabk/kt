@@ -74,7 +74,7 @@ require_once __DIR__ . '/config.php';
         <?php
         try {
             $seo_db = Database::connect();
-            $seo_treks = $seo_db->query("SELECT slug, title FROM treks WHERE status = 'Active' ORDER BY id DESC LIMIT 10")->fetchAll();
+            $seo_treks = $seo_db->query("SELECT slug, title FROM treks WHERE status = 'Active' AND (is_indexed = 1 OR is_indexed IS NULL) ORDER BY id DESC LIMIT 10")->fetchAll();
         } catch (Exception $e) {
             $seo_treks = [];
         }
@@ -222,7 +222,7 @@ $wa_url = "https://wa.me/{$clean_wa_phone}?text=" . urlencode("Hi Karnataka Trek
 <script>
 window.addEventListener('DOMContentLoaded', function() {
     function initCallbackModal() {
-        if (typeof jQuery === 'undefined' || typeof bootstrap === 'undefined') {
+        if (!window.jQuery || !window.bootstrap) {
             setTimeout(initCallbackModal, 100);
             return;
         }
@@ -231,7 +231,7 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             if (!sessionStorage.getItem('kt_callback_dismissed') && !sessionStorage.getItem('kt_callback_submitted')) {
                 var callbackModalEl = document.getElementById('callbackModal');
-                if (callbackModalEl && typeof bootstrap !== 'undefined') {
+                if (callbackModalEl && window.bootstrap) {
                     var callbackModal = bootstrap.Modal.getOrCreateInstance(callbackModalEl);
                     callbackModal.show();
                 }
