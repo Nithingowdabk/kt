@@ -247,7 +247,7 @@ try {
 
 $page_title = $trek['title'];
 $meta_title = !empty($trek['meta_title']) ? $trek['meta_title'] : ($trek['title'] . ' | Karnataka Trekkers');
-$meta_desc = !empty($trek['meta_description']) ? truncate_meta_description($trek['meta_description']) : (!empty($trek['excerpt']) ? truncate_meta_description($trek['excerpt']) : truncate_meta_description($trek['description']));
+$meta_desc = !empty($trek['meta_description']) ? truncate_meta_description($trek['meta_description'], 300) : (!empty($trek['excerpt']) ? truncate_meta_description($trek['excerpt'], 160) : truncate_meta_description($trek['description'], 160));
 $canonical_url = SITE_URL . '/treks/' . $trek['slug'];
 $is_trek_indexed = (!isset($trek['is_indexed']) || (int)$trek['is_indexed'] === 1) && ($trek['status'] === 'Active');
 if (!empty($gallery) && !empty($gallery[0]['image_path'])) {

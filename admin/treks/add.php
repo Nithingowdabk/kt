@@ -322,9 +322,9 @@ try {
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>URL Slug <small class="text-muted">(leave blank to auto-generate)</small></span>
-                                <span id="trek_slug_counter" class="badge bg-light text-muted border">30–50 chars</span>
+                                <span id="trek_slug_counter" class="badge bg-light text-muted border">Up to 120 chars</span>
                             </label>
-                            <input type="text" name="slug" id="trek_slug" class="form-control" placeholder="e.g. kudremukh-peak-trek-karnataka-adventure" data-seo-counter="trek_slug_counter" data-seo-min="30" data-seo-max="50">
+                            <input type="text" name="slug" id="trek_slug" class="form-control" placeholder="e.g. kudremukh-peak-trek-karnataka-adventure" data-seo-counter="trek_slug_counter" data-seo-min="3" data-seo-max="120">
                         </div>
                         
                         <div class="col-md-4">
@@ -373,9 +373,9 @@ try {
                         <div class="col-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Trek Excerpt / Summary <small class="text-muted">(Short description shown on trek cards and search snippets)</small></span>
-                                <span id="trek_excerpt_counter" class="badge bg-light text-muted border">120–200 chars</span>
+                                <span id="trek_excerpt_counter" class="badge bg-light text-muted border">Up to 350 chars</span>
                             </label>
-                            <textarea name="excerpt" id="trek_excerpt" class="form-control" rows="2" placeholder="Experience the picturesque green hills, gushing streams, and thrilling misty ridge trails of Kudremukh on this guided weekend trekking expedition from Bangalore." data-seo-counter="trek_excerpt_counter" data-seo-min="120" data-seo-max="200"></textarea>
+                            <textarea name="excerpt" id="trek_excerpt" class="form-control" rows="2" placeholder="Experience the picturesque green hills, gushing streams, and thrilling misty ridge trails of Kudremukh on this guided weekend trekking expedition from Bangalore." data-seo-counter="trek_excerpt_counter" data-seo-min="10" data-seo-max="350"></textarea>
                         </div>
 
                         <!-- Packages and Pricing Section -->
@@ -435,9 +435,9 @@ try {
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Cover Image Alt Text</span>
-                                <span id="trek_image_alt_counter" class="badge bg-light text-muted border">50–125 chars</span>
+                                <span id="trek_image_alt_counter" class="badge bg-light text-muted border">Up to 150 chars</span>
                             </label>
-                            <input type="text" name="image_alt" id="trek_image_alt" class="form-control" placeholder="e.g. Trekkers ascending the lush misty ridge of Kudremukh mountain peak in Karnataka" data-seo-counter="trek_image_alt_counter" data-seo-min="50" data-seo-max="125">
+                            <input type="text" name="image_alt" id="trek_image_alt" class="form-control" placeholder="e.g. Trekkers ascending the lush misty ridge of Kudremukh mountain peak in Karnataka" data-seo-counter="trek_image_alt_counter" data-seo-min="5" data-seo-max="150">
                             <small class="text-muted">Descriptive alt text for image accessibility and Google Image SEO.</small>
                         </div>
 
@@ -613,25 +613,25 @@ try {
                         <div class="col-md-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span><i class="fas fa-key me-1 text-success"></i> Focus Keyphrase <small class="text-muted">(Primary search keyword/phrase target)</small></span>
-                                <span id="trek_keyphrase_counter" class="badge bg-light text-muted border">10–40 chars</span>
+                                <span id="trek_keyphrase_counter" class="badge bg-light text-muted border">Up to 100 chars</span>
                             </label>
-                            <input type="text" name="focus_keyphrase" id="trek_focus_keyphrase" class="form-control" placeholder="e.g. Kudremukh Trek from Bangalore" data-seo-counter="trek_keyphrase_counter" data-seo-min="10" data-seo-max="40">
+                            <input type="text" name="focus_keyphrase" id="trek_focus_keyphrase" class="form-control" placeholder="e.g. Kudremukh Trek from Bangalore" data-seo-counter="trek_keyphrase_counter" data-seo-min="3" data-seo-max="100">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>SEO Title (Meta Title)</span>
-                                <span id="trek_meta_title_counter" class="badge bg-light text-muted border">50–60 chars</span>
+                                <span id="trek_meta_title_counter" class="badge bg-light text-muted border">Up to 100 chars (50–70 ideal)</span>
                             </label>
-                            <input type="text" name="meta_title" id="trek_meta_title" class="form-control" placeholder="e.g. Kudremukh Trek Bangalore - 2 Day Western Ghats Trip" data-seo-counter="trek_meta_title_counter" data-seo-min="50" data-seo-max="60">
+                            <input type="text" name="meta_title" id="trek_meta_title" class="form-control" placeholder="e.g. Kudremukh Trek Bangalore - 2 Day Western Ghats Trip" data-seo-counter="trek_meta_title_counter" data-seo-min="10" data-seo-max="100">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Meta Description</span>
-                                <span id="trek_meta_desc_counter" class="badge bg-light text-muted border">150–155 chars</span>
+                                <span id="trek_meta_desc_counter" class="badge bg-light text-muted border">Up to 300 chars (150–160 ideal)</span>
                             </label>
-                            <textarea name="meta_description" id="trek_meta_description" class="form-control" rows="2" placeholder="Book the scenic Kudremukh peak trek in Chikmagalur with Karnataka Trekkers. Includes meals, certified guides, tent stays, and bus transfers from Bangalore." data-seo-counter="trek_meta_desc_counter" data-seo-min="150" data-seo-max="155"></textarea>
+                            <textarea name="meta_description" id="trek_meta_description" class="form-control" rows="2" placeholder="Book the scenic Kudremukh peak trek in Chikmagalur with Karnataka Trekkers. Includes meals, certified guides, tent stays, and bus transfers from Bangalore." data-seo-counter="trek_meta_desc_counter" data-seo-min="20" data-seo-max="300"></textarea>
                         </div>
 
                         <div class="col-12">
@@ -643,10 +643,10 @@ try {
                             </div>
                         </div>
 
-                        <!-- 10-12 Tags Manager -->
+                        <!-- Tags Manager -->
                         <div class="col-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-tags me-1 text-success"></i> Trek Tags & Keywords <small class="text-muted">(Recommended: 10–12 tags)</small></span>
+                                <span><i class="fas fa-tags me-1 text-success"></i> Trek Tags & Keywords <small class="text-muted">(Add as many as needed)</small></span>
                                 <span class="tag-count-badge badge bg-light text-muted border">0 tags</span>
                             </label>
                             <div class="tag-manager-wrapper border rounded p-3 bg-light">
@@ -656,7 +656,7 @@ try {
                                     <input type="text" class="form-control tag-add-input" placeholder="Type a tag and press Enter or comma (e.g. Kudremukh Trek, Chikmagalur, Monsoon Treks, Weekend Trips)...">
                                     <button class="btn btn-outline-success btn-add-tag" type="button"><i class="fas fa-plus me-1"></i> Add Tag</button>
                                 </div>
-                                <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Press Enter or comma to add each tag. Aim for 10 to 12 descriptive tags to boost search visibility.</small>
+                                <small class="text-muted mt-2 d-block"><i class="fas fa-info-circle me-1"></i> Press Enter or comma to add each tag. Add descriptive tags to boost search visibility.</small>
                             </div>
                         </div>
                     </div>

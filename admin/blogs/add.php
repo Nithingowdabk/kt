@@ -242,9 +242,9 @@ if ($id > 0) {
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>URL Slug <small class="text-muted">(leave blank to auto-generate)</small></span>
-                                <span id="blog_slug_counter" class="badge bg-light text-muted border">30–50 chars</span>
+                                <span id="blog_slug_counter" class="badge bg-light text-muted border">Up to 120 chars</span>
                             </label>
-                            <input type="text" name="slug" id="blog_slug" class="form-control" placeholder="e.g. hiking-safety-guide-western-ghats" value="<?php echo htmlspecialchars($blog['slug'] ?? ''); ?>" data-seo-counter="blog_slug_counter" data-seo-min="30" data-seo-max="50">
+                            <input type="text" name="slug" id="blog_slug" class="form-control" placeholder="e.g. hiking-safety-guide-western-ghats" value="<?php echo htmlspecialchars($blog['slug'] ?? ''); ?>" data-seo-counter="blog_slug_counter" data-seo-min="3" data-seo-max="120">
                         </div>
                         
                         <div class="col-md-6">
@@ -264,9 +264,9 @@ if ($id > 0) {
                         <div class="col-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Article Excerpt / Summary <small class="text-muted">(Short teaser shown on blog listings and search results)</small></span>
-                                <span id="blog_excerpt_counter" class="badge bg-light text-muted border">120–200 chars</span>
+                                <span id="blog_excerpt_counter" class="badge bg-light text-muted border">Up to 350 chars</span>
                             </label>
-                            <textarea name="excerpt" id="blog_excerpt" class="form-control" rows="2" placeholder="Discover the essential hiking safety tips and precautions for navigating the rugged terrains and monsoons of Western Ghats with ease and confidence." data-seo-counter="blog_excerpt_counter" data-seo-min="120" data-seo-max="200"><?php echo htmlspecialchars($blog['excerpt'] ?? ''); ?></textarea>
+                            <textarea name="excerpt" id="blog_excerpt" class="form-control" rows="2" placeholder="Discover the essential hiking safety tips and precautions for navigating the rugged terrains and monsoons of Western Ghats with ease and confidence." data-seo-counter="blog_excerpt_counter" data-seo-min="10" data-seo-max="350"><?php echo htmlspecialchars($blog['excerpt'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="col-md-6">
@@ -279,9 +279,9 @@ if ($id > 0) {
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Cover Image Alt Text</span>
-                                <span id="blog_image_alt_counter" class="badge bg-light text-muted border">50–125 chars</span>
+                                <span id="blog_image_alt_counter" class="badge bg-light text-muted border">Up to 150 chars</span>
                             </label>
-                            <input type="text" name="image_alt" id="blog_image_alt" class="form-control" placeholder="e.g. Group of happy backpackers trekking along scenic green mountain trail" value="<?php echo htmlspecialchars($blog['image_alt'] ?? ''); ?>" data-seo-counter="blog_image_alt_counter" data-seo-min="50" data-seo-max="125">
+                            <input type="text" name="image_alt" id="blog_image_alt" class="form-control" placeholder="e.g. Group of happy backpackers trekking along scenic green mountain trail" value="<?php echo htmlspecialchars($blog['image_alt'] ?? ''); ?>" data-seo-counter="blog_image_alt_counter" data-seo-min="5" data-seo-max="150">
                             <small class="text-muted">Descriptive alt text for image accessibility and Google Image SEO.</small>
                         </div>
                         
@@ -299,31 +299,31 @@ if ($id > 0) {
                         <div class="col-md-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span><i class="fas fa-key me-1 text-success"></i> Focus Keyphrase <small class="text-muted">(Primary search keyword/phrase target)</small></span>
-                                <span id="blog_keyphrase_counter" class="badge bg-light text-muted border">10–40 chars</span>
+                                <span id="blog_keyphrase_counter" class="badge bg-light text-muted border">Up to 100 chars</span>
                             </label>
-                            <input type="text" name="focus_keyphrase" id="blog_focus_keyphrase" class="form-control" placeholder="e.g. Hiking Safety Guide Karnataka" value="<?php echo htmlspecialchars($blog['focus_keyphrase'] ?? ''); ?>" data-seo-counter="blog_keyphrase_counter" data-seo-min="10" data-seo-max="40">
+                            <input type="text" name="focus_keyphrase" id="blog_focus_keyphrase" class="form-control" placeholder="e.g. Hiking Safety Guide Karnataka" value="<?php echo htmlspecialchars($blog['focus_keyphrase'] ?? ''); ?>" data-seo-counter="blog_keyphrase_counter" data-seo-min="3" data-seo-max="100">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>SEO Title (Meta Title)</span>
-                                <span id="blog_meta_title_counter" class="badge bg-light text-muted border">50–60 chars</span>
+                                <span id="blog_meta_title_counter" class="badge bg-light text-muted border">Up to 100 chars (50–70 ideal)</span>
                             </label>
-                            <input type="text" name="meta_title" id="blog_meta_title" class="form-control" placeholder="e.g. Top 10 Hiking Safety Tips for Western Ghats Trekkers" value="<?php echo htmlspecialchars($blog['meta_title'] ?? ''); ?>" data-seo-counter="blog_meta_title_counter" data-seo-min="50" data-seo-max="60">
+                            <input type="text" name="meta_title" id="blog_meta_title" class="form-control" placeholder="e.g. Top 10 Hiking Safety Tips for Western Ghats Trekkers" value="<?php echo htmlspecialchars($blog['meta_title'] ?? ''); ?>" data-seo-counter="blog_meta_title_counter" data-seo-min="10" data-seo-max="100">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label d-flex justify-content-between align-items-center">
                                 <span>Meta Description</span>
-                                <span id="blog_meta_desc_counter" class="badge bg-light text-muted border">150–155 chars</span>
+                                <span id="blog_meta_desc_counter" class="badge bg-light text-muted border">Up to 300 chars (150–160 ideal)</span>
                             </label>
-                            <textarea name="meta_description" id="blog_meta_description" class="form-control" rows="2" placeholder="Learn the must-know trekking safety tips for hiking in Karnataka and Western Ghats. Stay prepared with guidance from expert outdoor tour leaders." data-seo-counter="blog_meta_desc_counter" data-seo-min="150" data-seo-max="155"><?php echo htmlspecialchars($blog['meta_description'] ?? ''); ?></textarea>
+                            <textarea name="meta_description" id="blog_meta_description" class="form-control" rows="2" placeholder="Learn the must-know trekking safety tips for hiking in Karnataka and Western Ghats. Stay prepared with guidance from expert outdoor tour leaders." data-seo-counter="blog_meta_desc_counter" data-seo-min="20" data-seo-max="300"><?php echo htmlspecialchars($blog['meta_description'] ?? ''); ?></textarea>
                         </div>
 
-                        <!-- 10-12 Tags Manager -->
+                        <!-- Tags Manager -->
                         <div class="col-12">
                             <label class="form-label d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-tags me-1 text-success"></i> Blog Tags & Keywords <small class="text-muted">(Recommended: 10–12 tags)</small></span>
+                                <span><i class="fas fa-tags me-1 text-success"></i> Blog Tags & Keywords <small class="text-muted">(Add as many as needed)</small></span>
                                 <span class="tag-count-badge badge bg-light text-muted border">0 tags</span>
                             </label>
                             <div class="tag-manager-wrapper border rounded p-3 bg-light">

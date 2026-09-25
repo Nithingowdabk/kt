@@ -510,16 +510,13 @@ $(document).ready(function() {
 
                 if (len === 0) {
                     badgeClass += 'bg-light text-muted border';
-                    statusText = '0 / ' + min + '–' + max + ' chars';
-                } else if (len < min) {
-                    badgeClass += 'bg-warning text-dark';
-                    statusText = len + ' chars (Need ' + (min - len) + ' more for ' + min + '–' + max + ')';
-                } else if (len > max) {
+                    statusText = max > 0 ? ('0 / ' + max + ' chars') : '0 chars';
+                } else if (max > 0 && len > max) {
                     badgeClass += 'bg-danger text-white';
-                    statusText = len + ' chars (Exceeds by ' + (len - max) + ' | Max: ' + max + ')';
+                    statusText = len + ' / ' + max + ' chars (Exceeds ' + max + ')';
                 } else {
-                    badgeClass += 'bg-success text-white';
-                    statusText = '✓ Optimal (' + len + ' chars | ' + min + '–' + max + ')';
+                    badgeClass += 'bg-light text-dark border';
+                    statusText = len + (max > 0 ? ' / ' + max + ' chars' : ' chars');
                 }
 
                 if ($badge.length) {
@@ -580,23 +577,17 @@ $(document).ready(function() {
                     });
                 }
 
-                // Update Tag Count Badge (Guidance: 10–12 tags)
+                // Update Tag Count Badge (Flexible guidance)
                 var count = tags.length;
                 var badgeClass = 'badge ';
                 var badgeText = '';
 
                 if (count === 0) {
                     badgeClass += 'bg-light text-muted border';
-                    badgeText = '0 tags (Recommended: 10–12)';
-                } else if (count >= 10 && count <= 12) {
-                    badgeClass += 'bg-success text-white';
-                    badgeText = '✓ Optimal: ' + count + ' / 12 tags';
-                } else if (count < 10) {
-                    badgeClass += 'bg-warning text-dark';
-                    badgeText = count + ' tags (Recommended: 10–12 tags | Need ' + (10 - count) + ' more)';
+                    badgeText = '0 tags added';
                 } else {
-                    badgeClass += 'bg-danger text-white';
-                    badgeText = count + ' tags (Recommended max: 12 tags | Exceeds by ' + (count - 12) + ')';
+                    badgeClass += 'bg-light text-dark border';
+                    badgeText = count + (count === 1 ? ' tag added' : ' tags added');
                 }
 
                 if ($countBadge.length) {

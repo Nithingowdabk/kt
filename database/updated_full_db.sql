@@ -473,7 +473,8 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
 -- If tables already exist, this safely adds any missing columns without data loss.
 -- ==============================================================================
 
--- Treks Table Upgrades (SEO, Dual Packages, Recurring Schedules)
+-- Treks Table Upgrades (SEO, Dual Packages, Recurring Schedules, Draft status)
+ALTER TABLE `treks` MODIFY COLUMN `status` ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active';
 ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `location` VARCHAR(150) DEFAULT 'Karnataka';
 ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `with_transport_price` DECIMAL(10,2) NOT NULL DEFAULT 0.00;
 ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `with_transport_offer_price` DECIMAL(10,2) DEFAULT NULL;
@@ -498,7 +499,8 @@ ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `excerpt` TEXT DEFAULT NULL;
 ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `image_alt` VARCHAR(255) DEFAULT NULL;
 ALTER TABLE `treks` ADD COLUMN IF NOT EXISTS `tags` TEXT DEFAULT NULL;
 
--- Blogs Table Upgrades (SEO fields)
+-- Blogs Table Upgrades (SEO fields, Draft status)
+ALTER TABLE `blogs` MODIFY COLUMN `status` ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active';
 ALTER TABLE `blogs` ADD COLUMN IF NOT EXISTS `meta_title` VARCHAR(150) DEFAULT NULL;
 ALTER TABLE `blogs` ADD COLUMN IF NOT EXISTS `meta_description` VARCHAR(255) DEFAULT NULL;
 ALTER TABLE `blogs` ADD COLUMN IF NOT EXISTS `focus_keyphrase` VARCHAR(150) DEFAULT NULL;

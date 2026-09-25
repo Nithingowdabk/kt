@@ -65,9 +65,9 @@ $schema_map = [
         'recurring_saturday' => "TINYINT(1) DEFAULT 0",
         'recurring_sunday' => "TINYINT(1) DEFAULT 0",
         'recurring_until' => "DATE DEFAULT NULL",
-        'meta_title' => "VARCHAR(150) DEFAULT NULL",
-        'meta_description' => "VARCHAR(255) DEFAULT NULL",
-        'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
+        'meta_title' => "VARCHAR(255) DEFAULT NULL",
+        'meta_description' => "TEXT DEFAULT NULL",
+        'focus_keyphrase' => "VARCHAR(255) DEFAULT NULL",
         'excerpt' => "TEXT DEFAULT NULL",
         'image_alt' => "VARCHAR(255) DEFAULT NULL",
         'starting_point' => "VARCHAR(150) DEFAULT NULL",
@@ -76,9 +76,9 @@ $schema_map = [
         'tags' => "TEXT DEFAULT NULL"
     ],
     'blogs' => [
-        'meta_title' => "VARCHAR(150) DEFAULT NULL",
-        'meta_description' => "VARCHAR(255) DEFAULT NULL",
-        'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
+        'meta_title' => "VARCHAR(255) DEFAULT NULL",
+        'meta_description' => "TEXT DEFAULT NULL",
+        'focus_keyphrase' => "VARCHAR(255) DEFAULT NULL",
         'excerpt' => "TEXT DEFAULT NULL",
         'image_alt' => "VARCHAR(255) DEFAULT NULL",
         'tags' => "TEXT DEFAULT NULL"
@@ -287,6 +287,15 @@ foreach ($schema_map as $table => $columns) {
 ensure_enum_value($db, 'treks', 'status', 'Draft', "ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active'");
 ensure_enum_value($db, 'blogs', 'status', 'Draft', "ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active'");
 output_line("✓ Table status ENUM values verified (Active, Inactive, Draft).", "success");
+
+// Step 2c: Ensure SEO columns have expanded capacities
+try {
+    $db->exec("ALTER TABLE `treks` MODIFY COLUMN `meta_title` VARCHAR(255) DEFAULT NULL, MODIFY COLUMN `meta_description` TEXT DEFAULT NULL, MODIFY COLUMN `focus_keyphrase` VARCHAR(255) DEFAULT NULL");
+    $db->exec("ALTER TABLE `blogs` MODIFY COLUMN `meta_title` VARCHAR(255) DEFAULT NULL, MODIFY COLUMN `meta_description` TEXT DEFAULT NULL, MODIFY COLUMN `focus_keyphrase` VARCHAR(255) DEFAULT NULL");
+    output_line("✓ SEO column capacities expanded to support generous limits (TEXT / VARCHAR(255)).", "success");
+} catch (Exception $e) {
+    output_line("Note on SEO column expansion: " . $e->getMessage(), "info");
+}
 
 
 // Step 3: Insert default seed settings
