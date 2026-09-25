@@ -258,7 +258,7 @@ try {
                 <span>Customer Favorites</span>
                 <h2 class="mb-0">Featured Treks</h2>
             </div>
-            <a href="<?php echo SITE_URL; ?>/treks/index.php" class="text-success fw-bold text-decoration-none hover-underline" aria-label="View all featured treks">
+            <a href="<?php echo SITE_URL; ?>/treks" class="text-success fw-bold text-decoration-none hover-underline" aria-label="View all featured treks">
                 View All Featured Treks <i class="fas fa-arrow-right ms-1"></i>
             </a>
         </div>
@@ -303,7 +303,7 @@ try {
                 }
                 $shown_categories++;
             ?>
-                <a href="<?php echo SITE_URL; ?>/treks/category.php?slug=<?php echo htmlspecialchars($cat['slug']); ?>" class="category-card-link text-decoration-none" aria-label="Browse <?php echo htmlspecialchars($cat['category_name']); ?> Category (<?php echo $trek_count; ?> Treks)">
+                <a href="<?php echo SITE_URL; ?>/category/<?php echo htmlspecialchars($cat['slug']); ?>" class="category-card-link text-decoration-none" aria-label="Browse <?php echo htmlspecialchars($cat['category_name']); ?> Category (<?php echo $trek_count; ?> Treks)">
                     <div class="category-card">
                         <div class="category-icon-wrapper">
                             <i class="<?php echo htmlspecialchars($cat['icon'] ?: 'fas fa-tags'); ?>"></i>
@@ -338,7 +338,7 @@ try {
                         <h2 class="mb-0 fs-3 fw-bold text-dark"><?php echo htmlspecialchars($cat['category_name']); ?></h2>
                     </div>
                     <?php if (count($cat_treks) > 6): ?>
-                        <a href="<?php echo SITE_URL; ?>/treks/category.php?slug=<?php echo $cat['slug']; ?>" class="text-success fw-bold text-decoration-none hover-underline" aria-label="View all <?php echo htmlspecialchars($cat['category_name']); ?> treks">
+                        <a href="<?php echo SITE_URL; ?>/category/<?php echo $cat['slug']; ?>" class="text-success fw-bold text-decoration-none hover-underline" aria-label="View all <?php echo htmlspecialchars($cat['category_name']); ?> treks">
                             View All <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     <?php endif; ?>

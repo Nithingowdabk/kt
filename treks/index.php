@@ -96,7 +96,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 100px; z-index: 10;">
                         <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
                             <h5 class="fw-bold mb-0 text-success"><i class="fas fa-filter me-2"></i>Filters</h5>
-                            <a href="<?php echo SITE_URL; ?>/treks/index.php" class="text-muted small text-decoration-none"><i class="fas fa-redo me-1"></i>Reset</a>
+                            <a href="<?php echo SITE_URL; ?>/treks" class="text-muted small text-decoration-none"><i class="fas fa-redo me-1"></i>Reset</a>
                         </div>
                         
                         <form action="" method="GET">

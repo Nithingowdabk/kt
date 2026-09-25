@@ -8,6 +8,19 @@ Options -Indexes
 # 0. XML Sitemap & Robots routing
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+# 0a. Permanent 301 Redirect for direct requests to legacy dynamic PHP scripts
+RewriteCond %{THE_REQUEST} \s/+treks/details\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^treks/details\.php$ /treks/%1? [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+treks/details\.php [NC]
+RewriteRule ^treks/details\.php$ /treks? [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+treks/category\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^treks/category\.php$ /category/%1? [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+blogs\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^blogs\.php$ /blogs/%1? [R=301,L]
+
 # 0b. Critical 301 Permanent Redirects for Corrected Trek Slugs
 RewriteRule ^treks/shivagange-sunrise-trek-from-baangalore/?$ /treks/shivagange-sunrise-trek-from-bangalore [R=301,L]
 RewriteRule ^treks/netravathi-trek-from-banaglore/?$ /treks/netravathi-trek-from-bangalore [R=301,L]

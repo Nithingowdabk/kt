@@ -90,7 +90,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-route text-muted fs-1 mb-3"></i>
                     <p class="text-muted">No trekking packages available under this category currently.</p>
-                    <a href="<?php echo SITE_URL; ?>/treks/index.php" class="btn btn-primary-custom mt-3">See All Treks</a>
+                    <a href="<?php echo SITE_URL; ?>/treks" class="btn btn-primary-custom mt-3">See All Treks</a>
                 </div>
             <?php endif; ?>
         </div>
