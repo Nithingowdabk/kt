@@ -32,30 +32,60 @@ function format_price($amount) {
 }
 
 /**
- * Get starting price of a trek (without transport if own transport is enabled, otherwise with transport)
+ * Get starting price of a trek (authoritative lowest active package price)
  */
 function get_starting_price($trek) {
     if (!$trek) return 0.00;
     
-    $has_own_transport = isset($trek['own_transport_enabled']) && (int)$trek['own_transport_enabled'] === 1;
-    if ($has_own_transport) {
-        $without_price = (float)($trek['without_transport_price'] ?? 0);
-        $without_offer = (float)($trek['without_transport_offer_price'] ?? 0);
-        
-        // Fallback to legacy price * 0.6 if without_transport_price is 0
-        if ($without_price <= 0) {
-            $legacy_price = (float)($trek['price'] ?? 0);
+    $own_transport_enabled = isset($trek['own_transport_enabled']) ? (int)$trek['own_transport_enabled'] : 1;
+    $transport_enabled = isset($trek['transport_enabled']) ? (int)$trek['transport_enabled'] : 1;
+    
+    $prices = [];
+    
+    if ($own_transport_enabled) {
+        $p = (float)($trek['without_transport_price'] ?? 0);
+        $offer = (float)($trek['without_transport_offer_price'] ?? 0);
+        if ($p <= 0) {
+            $legacy_p = (float)($trek['price'] ?? 0);
             $legacy_offer = (float)($trek['offer_price'] ?? 0);
-            $without_price = $legacy_price * 0.6;
-            $without_offer = $legacy_offer > 0 ? ($legacy_offer * 0.6) : 0;
+            $p = $legacy_p * 0.6;
+            $offer = $legacy_offer > 0 ? ($legacy_offer * 0.6) : 0;
         }
-        
-        return ($without_offer > 0) ? $without_offer : $without_price;
-    } else {
-        $legacy_price = (float)($trek['price'] ?? 0);
-        $legacy_offer = (float)($trek['offer_price'] ?? 0);
-        return ($legacy_offer > 0) ? $legacy_offer : $legacy_price;
+        $effective = ($offer > 0 && $offer < $p) ? $offer : $p;
+        if ($effective > 0) $prices[] = $effective;
     }
+    
+    if ($transport_enabled) {
+        $p = (float)($trek['with_transport_price'] ?? 0);
+        $offer = (float)($trek['with_transport_offer_price'] ?? 0);
+        if ($p <= 0) {
+            $p = (float)($trek['price'] ?? 0);
+            $offer = (float)($trek['offer_price'] ?? 0);
+        }
+        $effective = ($offer > 0 && $offer < $p) ? $offer : $p;
+        if ($effective > 0) $prices[] = $effective;
+    }
+    
+    if (!empty($prices)) {
+        return min($prices);
+    }
+    
+    $legacy_price = (float)($trek['price'] ?? 0);
+    $legacy_offer = (float)($trek['offer_price'] ?? 0);
+    return ($legacy_offer > 0) ? $legacy_offer : $legacy_price;
+}
+
+/**
+ * Truncate text cleanly at word boundary for SEO meta description (never cuts mid-word)
+ */
+function truncate_meta_description($text, $maxLength = 155) {
+    $text = trim(preg_replace('/\s+/u', ' ', strip_tags($text ?? '')));
+    if (mb_strlen($text) <= $maxLength) {
+        return $text;
+    }
+    $text = mb_substr($text, 0, $maxLength);
+    $text = preg_replace('/\s+\S*$/u', '', $text);
+    return trim($text);
 }
 
 
@@ -691,3 +721,23 @@ function ensure_table_columns($db, $table, array $column_specs) {
 
     return $existing;
 }
+
+/**
+ * Ensure an ENUM column contains a specific value (e.g. 'Draft')
+ */
+function ensure_enum_value($db, $table, $column, $value, $full_enum_definition) {
+    $clean_table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+    $clean_col = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
+    try {
+        $stmt = $db->query("SHOW COLUMNS FROM `{$clean_table}` LIKE '{$clean_col}'");
+        if ($stmt && $row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $type = $row['Type'] ?? '';
+            if (stripos($type, "'{$value}'") === false) {
+                $db->exec("ALTER TABLE `{$clean_table}` MODIFY COLUMN `{$clean_col}` {$full_enum_definition}");
+            }
+        }
+    } catch (Throwable $e) {
+        // Ignore if restricted user permissions
+    }
+}
+

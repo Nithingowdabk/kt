@@ -10,7 +10,7 @@ require_once __DIR__ . '/../includes/auth.php';
 $db = Database::connect();
 $slug = sanitize_input($_GET['slug'] ?? '');
 
-// 301 Canonical Redirect for legacy query URLs: /treks/details.php?slug=xxx -> /treks/xxx
+// 1. Canonical 301 Redirect for legacy query URLs: /treks/details.php?slug=xxx -> /treks/xxx
 if (strpos($_SERVER['REQUEST_URI'] ?? '', 'details.php') !== false) {
     if (!empty($slug)) {
         header("Location: " . SITE_URL . "/treks/" . $slug, true, 301);
@@ -20,22 +20,66 @@ if (strpos($_SERVER['REQUEST_URI'] ?? '', 'details.php') !== false) {
     exit();
 }
 
+// 2. Canonical 301 Redirect for trailing slashes: /treks/slug/ -> /treks/slug
+$request_path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+if (!empty($slug) && preg_match('#^/treks/([^/]+)/+$#i', $request_path)) {
+    $user_params = $_GET;
+    unset($user_params['slug']);
+    $clean_query = !empty($user_params) ? '?' . http_build_query($user_params) : '';
+    header("Location: " . SITE_URL . "/treks/" . $slug . $clean_query, true, 301);
+    exit();
+}
+
 if (empty($slug)) {
     header('Location: ' . SITE_URL . '/treks');
     exit();
 }
 
 try {
-    // 1. Fetch Trek Details
-    $stmt = $db->prepare("SELECT t.*, c.category_name as category_name FROM treks t 
+    // 3. Fetch Trek Details
+    $stmt = $db->prepare("SELECT t.*, c.slug as category_slug, c.category_name as category_name FROM treks t 
                           LEFT JOIN trek_categories c ON t.category_id = c.id 
                           WHERE t.slug = ? AND t.status = 'Active' LIMIT 1");
     $stmt->execute([$slug]);
     $trek = $stmt->fetch();
 
+    // 4. Check for 301 redirects if not found under current slug
     if (!$trek) {
-        set_flash_message('danger', 'Trek not found.');
-        header('Location: ' . SITE_URL . '/treks/index.php');
+        $redir_stmt = $db->prepare("SELECT new_slug FROM trek_slug_redirects WHERE old_slug = ? ORDER BY id DESC LIMIT 1");
+        $redir_stmt->execute([$slug]);
+        $new_slug = $redir_stmt->fetchColumn();
+        if ($new_slug) {
+            header("Location: " . SITE_URL . "/treks/" . $new_slug, true, 301);
+            exit();
+        }
+
+        // Genuine HTTP 404 handling (No soft-404 redirects)
+        http_response_code(404);
+        $page_title = "404 - Trek Not Found";
+        $robots_meta = "noindex, nofollow";
+        require_once __DIR__ . '/../includes/header.php';
+        ?>
+        <section class="section-padding text-center py-5">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <i class="fas fa-mountain-sun fa-4x text-success mb-4 opacity-75"></i>
+                        <h1 class="display-5 fw-bold text-dark mb-3">Trek Not Found</h1>
+                        <p class="lead text-muted mb-4">We could not find the trek you are looking for. It may have been renamed, rescheduled, or temporarily taken offline.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="<?php echo SITE_URL; ?>/treks" class="btn btn-success px-4 py-2.5 fw-bold rounded-pill">
+                                <i class="fas fa-hiking me-2"></i>Explore All Treks
+                            </a>
+                            <a href="<?php echo SITE_URL; ?>/" class="btn btn-outline-secondary px-4 py-2.5 fw-bold rounded-pill">
+                                <i class="fas fa-home me-2"></i>Go Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php
+        require_once __DIR__ . '/../includes/footer.php';
         exit();
     }
 
@@ -202,8 +246,18 @@ try {
 }
 
 $page_title = $trek['title'];
-$meta_title = !empty($trek['meta_title']) ? $trek['meta_title'] : $trek['title'];
-$meta_desc = !empty($trek['meta_description']) ? $trek['meta_description'] : (!empty($trek['excerpt']) ? $trek['excerpt'] : substr(strip_tags($trek['description']), 0, 155));
+$meta_title = !empty($trek['meta_title']) ? $trek['meta_title'] : ($trek['title'] . ' | Karnataka Trekkers');
+$meta_desc = !empty($trek['meta_description']) ? truncate_meta_description($trek['meta_description']) : (!empty($trek['excerpt']) ? truncate_meta_description($trek['excerpt']) : truncate_meta_description($trek['description']));
+$canonical_url = SITE_URL . '/treks/' . $trek['slug'];
+$is_trek_indexed = (!isset($trek['is_indexed']) || (int)$trek['is_indexed'] === 1) && ($trek['status'] === 'Active');
+if (!empty($gallery) && !empty($gallery[0]['image_path'])) {
+    $hero_img_path = $gallery[0]['image_path'];
+} elseif (!empty($trek['image'])) {
+    $hero_img_path = $trek['image'];
+} else {
+    $hero_img_path = 'assets/images/default-trek.jpg';
+}
+$preload_hero_image = SITE_URL . '/' . $hero_img_path;
 $meta_keywords = !empty($trek['tags']) ? $trek['tags'] : (!empty($trek['focus_keyphrase']) ? $trek['focus_keyphrase'] : null);
 $og_image = !empty($trek['image']) ? (SITE_URL . '/' . $trek['image']) : null;
 $og_image_alt = !empty($trek['image_alt']) ? $trek['image_alt'] : $trek['title'];
@@ -211,7 +265,37 @@ $og_image_alt = !empty($trek['image_alt']) ? $trek['image_alt'] : $trek['title']
 // Add extra js for booking flow
 $extra_js = ['assets/js/booking.js'];
 
+// Dynamic Breadcrumbs Setup
+$category_name = !empty($trek['category_name']) ? $trek['category_name'] : '';
+$category_slug = !empty($trek['category_slug']) ? $trek['category_slug'] : '';
+$category_url = !empty($category_slug) ? (SITE_URL . '/category/' . $category_slug) : (SITE_URL . '/treks');
+
+$breadcrumb_items = [
+    ['name' => 'Home', 'url' => SITE_URL . '/'],
+    ['name' => 'Treks', 'url' => SITE_URL . '/treks'],
+];
+if (!empty($category_name)) {
+    $breadcrumb_items[] = ['name' => $category_name, 'url' => $category_url];
+}
+$breadcrumb_items[] = ['name' => $trek['title'], 'url' => $canonical_url];
+
+$breadcrumb_schema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => []
+];
+foreach ($breadcrumb_items as $b_idx => $b_item) {
+    $breadcrumb_schema['itemListElement'][] = [
+        '@type' => 'ListItem',
+        'position' => $b_idx + 1,
+        'name' => $b_item['name'],
+        'item' => $b_item['url']
+    ];
+}
+
 $extra_head = '';
+$extra_head .= "\n    " . '<script type="application/ld+json">' . json_encode($breadcrumb_schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
+
 if (!empty($trek_faqs)) {
     $schema_questions = [];
     foreach ($trek_faqs as $faq) {
@@ -484,11 +568,13 @@ $total_images = count($gallery_items);
             for ($i = 0; $i < $visible_count; $i++):
                 $img_path = $gallery_items[$i];
                 $slot_class = ($i === 0) ? 'hero-masonry-large' : 'hero-masonry-small hero-masonry-small-' . $i;
-                $lazy = ($i < 5) ? '' : ' loading="lazy"';
+                $lazy = ($i === 0) ? '' : ' loading="lazy"';
+                $img_w = ($i === 0) ? 800 : 400;
+                $img_h = ($i === 0) ? 450 : 225;
             ?>
                 <div class="<?php echo $slot_class; ?>">
                     <a href="<?php echo SITE_URL . '/' . $img_path; ?>" class="glightbox" data-gallery="trek-main-gallery">
-                        <img src="<?php echo SITE_URL . '/' . $img_path; ?>" alt="<?php echo htmlspecialchars($trek['title']); ?> - Image <?php echo $i + 1; ?>"<?php echo $lazy; ?>>
+                        <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="<?php echo $img_w; ?>" height="<?php echo $img_h; ?>" alt="<?php echo htmlspecialchars($trek['title']); ?> gallery image <?php echo $i + 1; ?>"<?php echo $lazy; ?> style="aspect-ratio: 16/9; object-fit: cover;">
                     </a>
                 </div>
             <?php endfor; ?>
@@ -508,7 +594,7 @@ $total_images = count($gallery_items);
         <?php foreach ($gallery_items as $index => $img_path): ?>
             <div class="hero-mobile-slide">
                 <a href="<?php echo SITE_URL . '/' . $img_path; ?>" class="glightbox" data-gallery="trek-main-gallery">
-                    <img src="<?php echo SITE_URL . '/' . $img_path; ?>" alt="<?php echo htmlspecialchars($trek['title']); ?> - Image <?php echo $index + 1; ?>"<?php echo $index >= 3 ? ' loading="lazy"' : ''; ?>>
+                    <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="600" height="375" alt="<?php echo htmlspecialchars($trek['title']); ?> mobile image <?php echo $index + 1; ?>"<?php echo $index >= 1 ? ' loading="lazy"' : ' fetchpriority="high"'; ?> style="aspect-ratio: 16/10; object-fit: cover;">
                 </a>
             </div>
         <?php endforeach; ?>
@@ -527,16 +613,32 @@ $total_images = count($gallery_items);
     <div class="gallery-thumbnails-strip">
         <?php foreach ($gallery_items as $index => $img_path): ?>
             <button class="gallery-thumb-btn<?php echo $index === 0 ? ' active' : ''; ?>" data-index="<?php echo $index; ?>" data-src="<?php echo SITE_URL . '/' . $img_path; ?>" aria-label="View image <?php echo $index + 1; ?>">
-                <img src="<?php echo SITE_URL . '/' . $img_path; ?>" alt="Thumbnail <?php echo $index + 1; ?>" loading="lazy">
+                <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="120" height="80" alt="<?php echo htmlspecialchars($trek['title']); ?> thumbnail <?php echo $index + 1; ?>" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover;">
             </button>
         <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>
 
+<!-- Dynamic Visible Breadcrumbs -->
+<div class="container mt-3 mb-1 breadcrumbs-nav">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0 py-1" style="font-size: 0.85rem;">
+            <?php foreach ($breadcrumb_items as $b_idx => $b_item): 
+                $is_last = ($b_idx === count($breadcrumb_items) - 1);
+            ?>
+                <?php if ($is_last): ?>
+                    <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page"><?php echo htmlspecialchars($b_item['name']); ?></li>
+                <?php else: ?>
+                    <li class="breadcrumb-item"><a href="<?php echo htmlspecialchars($b_item['url']); ?>" class="text-decoration-none text-muted"><?php echo htmlspecialchars($b_item['name']); ?></a></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ol>
+    </nav>
+</div>
 
 <!-- SECTION 2: TREK HEADER -->
-<div class="trek-header-section container mt-4 mb-3">
+<div class="trek-header-section container mt-3 mb-3">
     <?php if (!empty($trek['location'])): ?>
         <div class="trek-header-location text-muted fw-bold small text-uppercase mb-1">
             <i class="fas fa-map-marker-alt text-success me-1"></i> <?php echo htmlspecialchars($trek['location']); ?>
@@ -544,16 +646,32 @@ $total_images = count($gallery_items);
     <?php endif; ?>
     <h1 class="trek-header-title display-6 fw-bold mb-2 text-dark"><?php echo htmlspecialchars($trek['title']); ?></h1>
     <div class="trek-header-rating d-flex align-items-center gap-2">
-        <div class="rating-stars text-warning fs-6">
-            <?php echo render_rating_stars(round($avg_rating)); ?>
-        </div>
-        <span class="rating-value fw-bold text-dark fs-5 mt-0.5"><?php echo $avg_rating; ?></span>
-        <span class="review-count text-muted fs-6 mt-0.5">(<?php echo count($reviews); ?> Reviews)</span>
+        <?php if (count($reviews) > 0): ?>
+            <div class="rating-stars text-warning fs-6">
+                <?php echo render_rating_stars(round($avg_rating)); ?>
+            </div>
+            <span class="rating-value fw-bold text-dark fs-5 mt-0.5"><?php echo $avg_rating; ?></span>
+            <span class="review-count text-muted fs-6 mt-0.5">(<?php echo count($reviews); ?> Reviews)</span>
+        <?php else: ?>
+            <span class="badge bg-light text-muted border px-2.5 py-1.5"><i class="fas fa-award text-warning me-1"></i>New Trek • No reviews yet</span>
+        <?php endif; ?>
     </div>
 </div>
 
 <!-- SECTION 3: QUICK FACTS BAR -->
 <?php
+// Rule: Earliest pickup time = starting time
+$calculated_start_time = null;
+if (!empty($pickup_points)) {
+    $sorted_pickups = $pickup_points;
+    usort($sorted_pickups, function($a, $b) {
+        return strcmp($a['time'] ?? '00:00:00', $b['time'] ?? '00:00:00');
+    });
+    if (!empty($sorted_pickups[0]['time'])) {
+        $calculated_start_time = date('h:i A', strtotime($sorted_pickups[0]['time']));
+    }
+}
+
 $quick_facts_items = [
     [
         'icon' => 'far fa-clock',
@@ -578,6 +696,28 @@ if (!empty($trek['trek_distance']) && $trek['trek_distance'] > 0) {
     ];
 }
 
+if (!empty($trek['starting_point'])) {
+    $quick_facts_items[] = [
+        'icon' => 'fas fa-map-marker-alt',
+        'label' => 'Starting Point',
+        'value' => $trek['starting_point']
+    ];
+} elseif (!empty($pickup_points) && !empty($pickup_points[0]['location'])) {
+    $quick_facts_items[] = [
+        'icon' => 'fas fa-map-marker-alt',
+        'label' => 'Starting Point',
+        'value' => $pickup_points[0]['location']
+    ];
+}
+
+if (!empty($calculated_start_time)) {
+    $quick_facts_items[] = [
+        'icon' => 'fas fa-clock',
+        'label' => 'Start Time',
+        'value' => $calculated_start_time
+    ];
+}
+
 if (!empty($trek['best_season'])) {
     $quick_facts_items[] = [
         'icon' => 'fas fa-cloud-sun',
@@ -593,7 +733,7 @@ if (!empty($trek['best_season'])) {
                 <div class="details-quick-fact-icon"><i class="<?php echo htmlspecialchars($item['icon']); ?>"></i></div>
                 <div class="details-quick-fact-info">
                     <span class="details-quick-fact-label"><?php echo htmlspecialchars($item['label']); ?></span>
-                    <h5 class="details-quick-fact-value"><?php echo htmlspecialchars($item['value']); ?></h5>
+                    <div class="details-quick-fact-value"><?php echo htmlspecialchars($item['value']); ?></div>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -609,7 +749,7 @@ if (!empty($trek['best_season'])) {
 <!-- Dynamic Trek Highlights Section -->
 <?php if (!empty($trek_highlights)): ?>
 <div class="container mb-5 mt-4">
-    <h4 class="fw-bold text-success mb-4 text-center"><i class="fas fa-star me-2"></i>Trek Highlights</h4>
+    <h2 class="fw-bold text-success mb-4 text-center"><i class="fas fa-star me-2"></i>Trek Highlights</h2>
     <div class="trek-highlights-scroll-wrapper">
         <div class="trek-highlights-grid">
             <?php foreach ($trek_highlights as $hl): ?>
@@ -636,7 +776,7 @@ if (!empty($trek['best_season'])) {
 
                 <!-- 4. Overview -->
                 <div class="mb-5" id="section-overview">
-                    <h4 class="fw-bold text-success mb-3"><i class="fas fa-info-circle me-2"></i>Overview</h4>
+                    <h2 class="fw-bold text-success mb-3"><i class="fas fa-info-circle me-2"></i>Overview</h2>
                     <p class="text-muted leading-relaxed"><?php echo nl2br(htmlspecialchars($trek['description'])); ?></p>
                 </div>
 
@@ -670,19 +810,17 @@ if (!empty($trek['best_season'])) {
                         </ul>
                     </div>
                 </div>
-                <?php endif; ?>
-
-                <!-- 5. Itinerary -->
+                <?php endif; ?>                <!-- 5. Itinerary -->
                 <div class="mb-5" id="section-itinerary">
-                    <h4 class="fw-bold text-success mb-3"><i class="fas fa-list-ol me-2"></i>Detailed Itinerary</h4>
+                    <h2 class="fw-bold text-success mb-3"><i class="fas fa-list-ol me-2"></i>Detailed Itinerary</h2>
                     <div class="itinerary-timeline">
                         <?php if (!empty($itinerary)): ?>
                             <?php foreach ($itinerary as $index => $day): ?>
                                 <div class="itinerary-day-node">
                                     <div class="itinerary-day-header" role="button" aria-expanded="false" tabindex="0">
-                                        <h5 class="fw-bold text-dark mb-0">
+                                        <h3 class="fw-bold text-dark mb-0 fs-6">
                                             <i class="fas fa-chevron-right itinerary-chevron me-2"></i><span class="itinerary-day-label">Day <?php echo $index; ?></span>: <?php echo htmlspecialchars($day['title'] ?? 'Overview'); ?>
-                                        </h5>
+                                        </h3>
                                     </div>
                                     <div class="itinerary-day-content">
                                         <?php if (!empty($day['desc'])): ?>
@@ -712,7 +850,7 @@ if (!empty($trek['best_season'])) {
                 <!-- Trek Videos -->
                 <?php if (!empty($videos)): ?>
                 <div class="mb-5">
-                    <h4 class="fw-bold text-success mb-3"><i class="fab fa-youtube me-2 text-danger"></i>Trek Videos</h4>
+                    <h2 class="fw-bold text-success mb-3"><i class="fab fa-youtube me-2 text-danger"></i>Trek Videos</h2>
                     <div class="row g-3">
                         <?php foreach ($videos as $vid): 
                             $vid_id = '';
@@ -736,36 +874,36 @@ if (!empty($trek['best_season'])) {
 
                 <!-- SECTION 8: INCLUSIONS & EXCLUSIONS -->
                 <div class="mb-5" id="section-inclusions-exclusions">
-                    <h4 class="fw-bold text-success mb-4"><i class="fas fa-clipboard-list me-2"></i>Inclusions & Exclusions</h4>
+                    <h2 class="fw-bold text-success mb-4"><i class="fas fa-clipboard-list me-2"></i>Inclusions & Exclusions</h2>
                     
                     <?php if ($transport_enabled): ?>
                         <div class="package-inclusions-exclusions mb-5">
-                            <h5 class="fw-bold text-dark mb-3"><i class="fas fa-bus text-success me-2"></i>WITH TRANSPORT</h5>
+                            <h3 class="fw-bold text-dark mb-3 fs-5"><i class="fas fa-bus text-success me-2"></i>WITH TRANSPORT</h3>
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="inclusions-card-premium h-100">
                                         <h6 class="fw-bold text-success mb-3"><i class="fas fa-check-circle me-2"></i>What's Included</h6>
                                         <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                                             <?php 
-                                            $inc_items = !empty($trek['with_transport_inclusions']) ? explode("\n", $trek['with_transport_inclusions']) : [];
-                                            if (empty($inc_items) && !empty($trek['with_transport_inclusions'])) {
-                                                $inc_items = explode(",", $trek['with_transport_inclusions']);
-                                            }
-                                            if (!empty($inc_items)): 
-                                                foreach ($inc_items as $item):
-                                                    $clean = trim($item, " \t\n\r\0\x0B-*•✓");
-                                                    if (empty($clean)) continue;
-                                            ?>
-                                                <li class="d-flex align-items-start text-muted">
-                                                    <i class="fas fa-check text-success me-2 mt-1 small"></i>
-                                                    <span><?php echo htmlspecialchars($clean); ?></span>
-                                                </li>
-                                            <?php 
-                                                endforeach; 
-                                            else: 
-                                            ?>
-                                                <li class="text-muted">Inclusions details will be loaded shortly.</li>
-                                            <?php endif; ?>
+                                             $inc_items = !empty($trek['with_transport_inclusions']) ? explode("\n", $trek['with_transport_inclusions']) : [];
+                                             if (empty($inc_items) && !empty($trek['with_transport_inclusions'])) {
+                                                 $inc_items = explode(",", $trek['with_transport_inclusions']);
+                                             }
+                                             if (!empty($inc_items)): 
+                                                 foreach ($inc_items as $item):
+                                                     $clean = trim($item, " \t\n\r\0\x0B-*•✓");
+                                                     if (empty($clean)) continue;
+                                             ?>
+                                                 <li class="d-flex align-items-start text-muted">
+                                                     <i class="fas fa-check text-success me-2 mt-1 small"></i>
+                                                     <span><?php echo htmlspecialchars($clean); ?></span>
+                                                 </li>
+                                             <?php 
+                                                 endforeach; 
+                                             else: 
+                                             ?>
+                                                 <li class="text-muted">Inclusions details will be loaded shortly.</li>
+                                             <?php endif; ?>
                                         </ul>
                                     </div>
                                 </div>
@@ -774,25 +912,25 @@ if (!empty($trek['best_season'])) {
                                         <h6 class="fw-bold text-danger mb-3"><i class="fas fa-times-circle me-2"></i>What's Excluded</h6>
                                         <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                                             <?php 
-                                            $exc_items = !empty($trek['with_transport_exclusions']) ? explode("\n", $trek['with_transport_exclusions']) : [];
-                                            if (empty($exc_items) && !empty($trek['with_transport_exclusions'])) {
-                                                $exc_items = explode(",", $trek['with_transport_exclusions']);
-                                            }
-                                            if (!empty($exc_items)): 
-                                                foreach ($exc_items as $item):
-                                                    $clean = trim($item, " \t\n\r\0\x0B-*•✕x");
-                                                    if (empty($clean)) continue;
-                                            ?>
-                                                <li class="d-flex align-items-start text-muted">
-                                                    <i class="fas fa-times text-danger me-2 mt-1 small"></i>
-                                                    <span><?php echo htmlspecialchars($clean); ?></span>
-                                                </li>
-                                            <?php 
-                                                endforeach; 
-                                            else: 
-                                            ?>
-                                                <li class="text-muted">Exclusions details will be loaded shortly.</li>
-                                            <?php endif; ?>
+                                             $exc_items = !empty($trek['with_transport_exclusions']) ? explode("\n", $trek['with_transport_exclusions']) : [];
+                                             if (empty($exc_items) && !empty($trek['with_transport_exclusions'])) {
+                                                 $exc_items = explode(",", $trek['with_transport_exclusions']);
+                                             }
+                                             if (!empty($exc_items)): 
+                                                 foreach ($exc_items as $item):
+                                                     $clean = trim($item, " \t\n\r\0\x0B-*•✕x");
+                                                     if (empty($clean)) continue;
+                                             ?>
+                                                 <li class="d-flex align-items-start text-muted">
+                                                     <i class="fas fa-times text-danger me-2 mt-1 small"></i>
+                                                     <span><?php echo htmlspecialchars($clean); ?></span>
+                                                 </li>
+                                             <?php 
+                                                 endforeach; 
+                                             else: 
+                                             ?>
+                                                 <li class="text-muted">Exclusions details will be loaded shortly.</li>
+                                             <?php endif; ?>
                                         </ul>
                                     </div>
                                 </div>
@@ -802,32 +940,32 @@ if (!empty($trek['best_season'])) {
 
                     <?php if ($own_transport_enabled): ?>
                         <div class="package-inclusions-exclusions">
-                            <h5 class="fw-bold text-dark mb-3"><i class="fas fa-car text-success me-2"></i>WITHOUT TRANSPORT</h5>
+                            <h3 class="fw-bold text-dark mb-3 fs-5"><i class="fas fa-car text-success me-2"></i>WITHOUT TRANSPORT</h3>
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="inclusions-card-premium h-100">
                                         <h6 class="fw-bold text-success mb-3"><i class="fas fa-check-circle me-2"></i>What's Included</h6>
                                         <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                                             <?php 
-                                            $inc_items = !empty($trek['own_transport_inclusions']) ? explode("\n", $trek['own_transport_inclusions']) : [];
-                                            if (empty($inc_items) && !empty($trek['own_transport_inclusions'])) {
-                                                $inc_items = explode(",", $trek['own_transport_inclusions']);
-                                            }
-                                            if (!empty($inc_items)): 
-                                                foreach ($inc_items as $item):
-                                                    $clean = trim($item, " \t\n\r\0\x0B-*•✓");
-                                                    if (empty($clean)) continue;
-                                            ?>
-                                                <li class="d-flex align-items-start text-muted">
-                                                    <i class="fas fa-check text-success me-2 mt-1 small"></i>
-                                                    <span><?php echo htmlspecialchars($clean); ?></span>
-                                                </li>
-                                            <?php 
-                                                endforeach; 
-                                            else: 
-                                            ?>
-                                                <li class="text-muted">Inclusions details will be loaded shortly.</li>
-                                            <?php endif; ?>
+                                             $inc_items = !empty($trek['own_transport_inclusions']) ? explode("\n", $trek['own_transport_inclusions']) : [];
+                                             if (empty($inc_items) && !empty($trek['own_transport_inclusions'])) {
+                                                 $inc_items = explode(",", $trek['own_transport_inclusions']);
+                                             }
+                                             if (!empty($inc_items)): 
+                                                 foreach ($inc_items as $item):
+                                                     $clean = trim($item, " \t\n\r\0\x0B-*•✓");
+                                                     if (empty($clean)) continue;
+                                             ?>
+                                                 <li class="d-flex align-items-start text-muted">
+                                                     <i class="fas fa-check text-success me-2 mt-1 small"></i>
+                                                     <span><?php echo htmlspecialchars($clean); ?></span>
+                                                 </li>
+                                             <?php 
+                                                 endforeach; 
+                                             else: 
+                                             ?>
+                                                 <li class="text-muted">Inclusions details will be loaded shortly.</li>
+                                             <?php endif; ?>
                                         </ul>
                                     </div>
                                 </div>
@@ -836,25 +974,25 @@ if (!empty($trek['best_season'])) {
                                         <h6 class="fw-bold text-danger mb-3"><i class="fas fa-times-circle me-2"></i>What's Excluded</h6>
                                         <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                                             <?php 
-                                            $exc_items = !empty($trek['own_transport_exclusions']) ? explode("\n", $trek['own_transport_exclusions']) : [];
-                                            if (empty($exc_items) && !empty($trek['own_transport_exclusions'])) {
-                                                $exc_items = explode(",", $trek['own_transport_exclusions']);
-                                            }
-                                            if (!empty($exc_items)): 
-                                                foreach ($exc_items as $item):
-                                                    $clean = trim($item, " \t\n\r\0\x0B-*•✕x");
-                                                    if (empty($clean)) continue;
-                                            ?>
-                                                <li class="d-flex align-items-start text-muted">
-                                                    <i class="fas fa-times text-danger me-2 mt-1 small"></i>
-                                                    <span><?php echo htmlspecialchars($clean); ?></span>
-                                                </li>
-                                            <?php 
-                                                endforeach; 
-                                            else: 
-                                            ?>
-                                                <li class="text-muted">Exclusions details will be loaded shortly.</li>
-                                            <?php endif; ?>
+                                             $exc_items = !empty($trek['own_transport_exclusions']) ? explode("\n", $trek['own_transport_exclusions']) : [];
+                                             if (empty($exc_items) && !empty($trek['own_transport_exclusions'])) {
+                                                 $exc_items = explode(",", $trek['own_transport_exclusions']);
+                                             }
+                                             if (!empty($exc_items)): 
+                                                 foreach ($exc_items as $item):
+                                                     $clean = trim($item, " \t\n\r\0\x0B-*•✕x");
+                                                     if (empty($clean)) continue;
+                                             ?>
+                                                 <li class="d-flex align-items-start text-muted">
+                                                     <i class="fas fa-times text-danger me-2 mt-1 small"></i>
+                                                     <span><?php echo htmlspecialchars($clean); ?></span>
+                                                 </li>
+                                             <?php 
+                                                 endforeach; 
+                                             else: 
+                                             ?>
+                                                 <li class="text-muted">Exclusions details will be loaded shortly.</li>
+                                             <?php endif; ?>
                                         </ul>
                                     </div>
                                 </div>
@@ -865,7 +1003,7 @@ if (!empty($trek['best_season'])) {
 
                 <!-- 8. Things to Carry -->
                 <div class="mb-5" id="section-carry">
-                    <h4 class="fw-bold text-warning mb-3"><i class="fas fa-backpack me-2"></i>Things to Carry</h4>
+                    <h2 class="fw-bold text-warning mb-3"><i class="fas fa-backpack me-2"></i>Things to Carry</h2>
                     <?php 
                     $carry_items = !empty($trek['things_to_carry']) ? explode("\n", $trek['things_to_carry']) : [];
                     $clean_carry = [];
@@ -892,13 +1030,9 @@ if (!empty($trek['best_season'])) {
                     <?php endif; ?>
                 </div>
 
-                <!-- 9. Pickup Points -->
+                <!-- 9. Pickup Points (Single Source of Truth: pickup_points table only) -->
                 <div class="mb-5" id="section-pickup">
-                    <h4 class="fw-bold text-success mb-3"><i class="fas fa-map-marker-alt me-2"></i>Pickup Points</h4>
-                    <?php if (!empty($trek['pickup_points_txt'])): ?>
-                        <p class="text-muted mb-3"><?php echo htmlspecialchars($trek['pickup_points_txt']); ?></p>
-                    <?php endif; ?>
-                    
+                    <h2 class="fw-bold text-success mb-3"><i class="fas fa-map-marker-alt me-2"></i>Pickup Points</h2>
                     <?php if (!empty($pickup_points)): ?>
                         <div class="pickup-metro-timeline">
                             <?php foreach ($pickup_points as $point): ?>
@@ -928,15 +1062,15 @@ if (!empty($trek['best_season'])) {
                 <!-- Dynamic Trek FAQs Section -->
                 <?php if (!empty($trek_faqs)): ?>
                 <div class="mb-5" id="section-faqs">
-                    <h4 class="fw-bold text-success mb-4"><i class="fas fa-question-circle me-2"></i>Frequently Asked Questions</h4>
+                    <h2 class="fw-bold text-success mb-4"><i class="fas fa-question-circle me-2"></i>Frequently Asked Questions</h2>
                     <div class="accordion" id="trekFaqAccordion">
                         <?php foreach ($trek_faqs as $index => $faq): ?>
                             <div class="accordion-item border rounded-3 mb-2 overflow-hidden shadow-sm bg-white">
-                                <h2 class="accordion-header" id="headingFaq<?php echo $index; ?>">
+                                <h3 class="accordion-header" id="headingFaq<?php echo $index; ?>">
                                     <button class="accordion-button collapsed fw-bold py-3 text-dark bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFaq<?php echo $index; ?>" aria-expanded="false" aria-controls="collapseFaq<?php echo $index; ?>" style="min-height: 48px; font-size: 0.95rem;">
                                         <?php echo htmlspecialchars($faq['question']); ?>
                                     </button>
-                                </h2>
+                                </h3>
                                 <div id="collapseFaq<?php echo $index; ?>" class="accordion-collapse collapse" aria-labelledby="headingFaq<?php echo $index; ?>" data-bs-parent="#trekFaqAccordion">
                                     <div class="accordion-body text-muted leading-relaxed border-top bg-light">
                                         <?php echo nl2br(htmlspecialchars($faq['answer'])); ?>
@@ -950,7 +1084,7 @@ if (!empty($trek['best_season'])) {
 
                 <!-- 10. Reviews -->
                 <div class="mb-5" id="section-reviews">
-                    <h4 class="fw-bold text-success mb-4"><i class="far fa-star me-2"></i>Reviews (<?php echo count($reviews); ?>)</h4>
+                    <h2 class="fw-bold text-success mb-4"><i class="far fa-star me-2"></i>Reviews (<?php echo count($reviews); ?>)</h2>
                     
                     <?php if (!empty($reviews)): ?>
                         <div class="reviews-slider-container">
@@ -977,7 +1111,7 @@ if (!empty($trek['best_season'])) {
                             </div>
                         </div>
                     <?php else: ?>
-                        <p class="text-muted">No reviews approved yet. Be the first to share your experience after trekking!</p>
+                        <p class="text-muted">No reviews yet. Be the first to share your experience after trekking!</p>
                     <?php endif; ?>
                     
                     <!-- Flash Message Feedback inside Reviews block -->
@@ -988,7 +1122,7 @@ if (!empty($trek['best_season'])) {
                     <!-- Verified review submission block -->
                     <?php if ($is_verified_trekker): ?>
                         <div class="card border-0 shadow-sm p-4 mt-4 bg-light rounded-3">
-                            <h5 class="fw-bold text-success mb-3"><i class="fas fa-pen-fancy me-2"></i>Write a Review</h5>
+                            <h3 class="fw-bold text-success mb-3 fs-5"><i class="fas fa-pen-fancy me-2"></i>Write a Review</h3>
                             <p class="text-muted small">You are marked as a verified trekker for this trip. Your review will help future trekkers!</p>
                             <form action="?slug=<?php echo $slug; ?>&action=add_review" method="POST">
                                 <div class="mb-3">
@@ -1011,23 +1145,16 @@ if (!empty($trek['best_season'])) {
                     <?php endif; ?>
                 </div>
 
-                <!-- 11. Related Treks -->
+                <!-- 11. Related Treks (Using $card_trek to prevent $trek variable collision) -->
                 <div class="mb-5" id="section-related">
-                    <h4 class="fw-bold text-success mb-4"><i class="fas fa-hiking me-2"></i>Related Treks</h4>
+                    <h2 class="fw-bold text-success mb-4"><i class="fas fa-hiking me-2"></i>Related Treks</h2>
                     <?php if (!empty($related_treks)): ?>
                         <div class="scroll-row-container">
-                             <?php 
-                             $backup_trek = $trek;
-                             foreach ($related_treks as $rel): 
-                                 $trek = $rel; // Pass the current iteration's data
-                             ?>
+                            <?php foreach ($related_treks as $card_trek): ?>
                                 <div class="scroll-row-card">
                                     <?php include __DIR__ . '/../includes/trek-card.php'; ?>
                                 </div>
-                            <?php 
-                             endforeach; 
-                             $trek = $backup_trek; // Restore main trek
-                             ?>
+                            <?php endforeach; ?>
                         </div>
                     <?php else: ?>
                         <p class="text-muted">No related treks available.</p>
@@ -1221,25 +1348,30 @@ if (!empty($trek['best_season'])) {
 
 <!-- Structured Data (JSON-LD) for Trek Product SEO -->
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "<?php echo htmlspecialchars($trek['title']); ?>",
-  "description": "<?php echo htmlspecialchars($meta_desc); ?>",
-  "image": "<?php echo !empty($trek['image']) ? SITE_URL . '/' . $trek['image'] : SITE_URL . '/assets/images/hero-bg.jpg'; ?>",
-  "offers": {
-    "@type": "Offer",
-    "price": "<?php echo $active_price; ?>",
-    "priceCurrency": "INR",
-    "availability": "https://schema.org/InStock",
-    "url": "<?php echo htmlspecialchars($canonical_url); ?>"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "<?php echo $avg_rating; ?>",
-    "reviewCount": "<?php echo max(1, count($reviews)); ?>"
-  }
+<?php
+$product_schema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Product',
+    'name' => $trek['title'],
+    'description' => $meta_desc,
+    'image' => !empty($trek['image']) ? SITE_URL . '/' . $trek['image'] : SITE_URL . '/assets/images/hero-bg.jpg',
+    'offers' => [
+        '@type' => 'Offer',
+        'price' => (string)get_starting_price($trek),
+        'priceCurrency' => 'INR',
+        'availability' => 'https://schema.org/InStock',
+        'url' => $canonical_url
+    ]
+];
+if (count($reviews) > 0) {
+    $product_schema['aggregateRating'] = [
+        '@type' => 'AggregateRating',
+        'ratingValue' => (string)$avg_rating,
+        'reviewCount' => (string)count($reviews)
+    ];
 }
+echo json_encode($product_schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+?>
 </script>
 
 

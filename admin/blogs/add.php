@@ -206,18 +206,29 @@ if ($id > 0) {
 
         <!-- Main Form -->
         <div class="container-fluid p-4" style="max-width: 900px;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold mb-0"><?php echo $id > 0 ? 'Edit Blog Article' : 'Write New Article'; ?></h3>
-                <a href="<?php echo SITE_URL; ?>/admin/blogs/manage.php" class="btn btn-outline-secondary btn-sm">
-                    &larr; Back to Articles
-                </a>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h3 class="fw-bold mb-1"><?php echo $id > 0 ? 'Edit Blog Article' : 'Write New Article'; ?></h3>
+                    <span id="autosave-status-indicator" class="badge bg-light text-muted border py-2 px-3 fw-normal" style="font-size: 0.82rem;">
+                        <i class="fas fa-cloud me-1"></i> <span>Draft auto-save ready</span>
+                    </span>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <button type="button" id="btn-save-draft" class="btn btn-outline-secondary btn-sm shadow-sm">
+                        <i class="fas fa-file-alt me-1 text-warning"></i> Save as Draft
+                    </button>
+                    <a href="<?php echo SITE_URL; ?>/admin/blogs/manage.php" class="btn btn-outline-secondary btn-sm">
+                        &larr; Back to Articles
+                    </a>
+                </div>
             </div>
 
             <?php if (!empty($error)): ?>
                 <div class="alert alert-danger" role="alert"><?php echo $error; ?></div>
             <?php endif; ?>
 
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form id="blogForm" action="" method="POST" enctype="multipart/form-data" data-autosave-type="blog">
+                <input type="hidden" name="id" value="<?php echo (int)$id; ?>">
                 <div class="admin-card">
                     <h5 class="fw-bold text-success mb-3 border-bottom pb-2">Article Content Details</h5>
                     
@@ -243,7 +254,8 @@ if ($id > 0) {
                         <div class="col-md-6">
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
-                                <option value="Active" <?php echo isset($blog) && $blog['status'] === 'Active' ? 'selected' : ''; ?>>Active</option>
+                                <option value="Active" <?php echo isset($blog) && $blog['status'] === 'Active' ? 'selected' : ''; ?>>Active (Published)</option>
+                                <option value="Draft" <?php echo (isset($blog) && $blog['status'] === 'Draft') || (!isset($blog) && $id == 0) ? 'selected' : ''; ?>>Draft (Unpublished)</option>
                                 <option value="Inactive" <?php echo isset($blog) && $blog['status'] === 'Inactive' ? 'selected' : ''; ?>>Inactive</option>
                             </select>
                         </div>
@@ -342,6 +354,7 @@ if ($id > 0) {
 <!-- Summernote WYSIWYG JS -->
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 <script src="<?php echo SITE_URL; ?>/assets/js/admin.js?v=<?php echo time(); ?>"></script>
+<script src="<?php echo SITE_URL; ?>/assets/js/admin-autosave.js?v=<?php echo time(); ?>"></script>
 <script>
 $(document).ready(function() {
     $('.summernote-blog-editor').summernote({
@@ -357,7 +370,23 @@ $(document).ready(function() {
             ['table', ['table']],
             ['insert', ['link', 'hr']],
             ['view', ['fullscreen', 'codeview', 'help']]
-        ]
+        ],
+        callbacks: {
+            onChange: function(contents) {
+                $('.summernote-blog-editor').val(contents);
+                const elem = document.querySelector('.summernote-blog-editor');
+                if (elem) elem.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+    });
+
+    // Initialize Auto-Draft Engine
+    window.initAdminAutosave({
+        formSelector: '#blogForm',
+        type: 'blog',
+        statusBadgeId: 'autosave-status-indicator',
+        draftBtnId: 'btn-save-draft',
+        endpoint: '<?php echo SITE_URL; ?>/admin/ajax/autosave.php'
     });
 });
 </script>

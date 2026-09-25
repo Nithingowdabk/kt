@@ -312,7 +312,7 @@ window.addEventListener('DOMContentLoaded', function() {
 // Inject page-specific JS scripts if defined
 if (isset($extra_js) && is_array($extra_js)) {
     foreach ($extra_js as $js_file) {
-        echo '<script src="' . SITE_URL . '/' . $js_file . '"></script>' . "\n";
+        echo '<script src="' . SITE_URL . '/' . $js_file . '" defer></script>' . "\n";
     }
 }
 ?>

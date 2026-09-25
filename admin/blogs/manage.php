@@ -90,7 +90,7 @@ try {
                         <tbody>
                             <?php if (!empty($blogs)): ?>
                                 <?php foreach ($blogs as $blog): 
-                                    $status_badge = $blog['status'] === 'Active' ? 'bg-success' : 'bg-secondary';
+                                    $status_badge = $blog['status'] === 'Active' ? 'bg-success' : ($blog['status'] === 'Draft' ? 'bg-warning text-dark' : 'bg-secondary');
                                 ?>
                                     <tr>
                                         <td><?php echo $blog['id']; ?></td>
@@ -100,7 +100,7 @@ try {
                                         </td>
                                         <td><?php echo htmlspecialchars($blog['author']); ?></td>
                                         <td><?php echo format_date($blog['created_at']); ?></td>
-                                        <td><span class="badge <?php echo $status_badge; ?>"><?php echo $blog['status']; ?></span></td>
+                                        <td><span class="badge <?php echo $status_badge; ?>"><?php echo htmlspecialchars($blog['status']); ?></span></td>
                                         <td class="text-end">
                                             <a href="<?php echo SITE_URL; ?>/admin/blogs/add.php?id=<?php echo $blog['id']; ?>" class="btn btn-sm btn-outline-primary py-1 px-2 me-1">
                                                 <i class="fas fa-edit"></i> Edit

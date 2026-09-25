@@ -44,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duration = sanitize_input($_POST['duration'] ?? '');
     $difficulty = !empty($_POST['difficulty']) ? sanitize_input($_POST['difficulty']) : null;
     $distance = (float)($_POST['trek_distance'] ?? 0);
+    $starting_point = sanitize_input($_POST['starting_point'] ?? '');
+    $best_season = sanitize_input($_POST['best_season'] ?? '');
     $altitude = (int)($trek['altitude'] ?? 0); // Keep existing value for backward compatibility
     
     // New Package configuration inputs
@@ -65,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pickup_points_txt = sanitize_input($_POST['pickup_points_txt'] ?? '');
     $status = sanitize_input($_POST['status'] ?? 'Active');
     $featured = isset($_POST['featured']) ? 1 : 0;
+    $is_indexed = isset($_POST['is_indexed']) ? 1 : 0;
     
     $meta_title = sanitize_input($_POST['meta_title'] ?? '');
     $meta_description = sanitize_input($_POST['meta_description'] ?? '');
@@ -141,7 +144,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
                     'excerpt' => "TEXT DEFAULT NULL",
                     'image_alt' => "VARCHAR(255) DEFAULT NULL",
-                    'tags' => "TEXT DEFAULT NULL"
+                    'tags' => "TEXT DEFAULT NULL",
+                    'starting_point' => "VARCHAR(150) DEFAULT NULL",
+                    'best_season' => "VARCHAR(100) DEFAULT NULL",
+                    'is_indexed' => "TINYINT(1) DEFAULT 1"
                 ];
                 $existing_trek_cols = ensure_table_columns($db, 'treks', $trek_col_specs);
 
@@ -163,8 +169,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'pickup_points_txt' => $pickup_points_txt,
                     'status' => $status,
                     'featured' => $featured,
-                    'image' => $image
+                    'image' => $image,
+                    'starting_point' => $starting_point,
+                    'best_season' => $best_season
                 ];
+
+                if (isset($existing_trek_cols['is_indexed'])) $trek_data['is_indexed'] = $is_indexed;
 
                 if (isset($existing_trek_cols['with_transport_price'])) $trek_data['with_transport_price'] = $with_transport_price;
                 if (isset($existing_trek_cols['with_transport_offer_price'])) $trek_data['with_transport_offer_price'] = $with_transport_offer_price;
@@ -184,6 +194,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($existing_trek_cols['excerpt'])) $trek_data['excerpt'] = $excerpt;
                 if (isset($existing_trek_cols['image_alt'])) $trek_data['image_alt'] = $image_alt;
                 if (isset($existing_trek_cols['tags'])) $trek_data['tags'] = $tags;
+                if (isset($existing_trek_cols['starting_point'])) $trek_data['starting_point'] = $starting_point;
+                if (isset($existing_trek_cols['best_season'])) $trek_data['best_season'] = $best_season;
+
+                // Step 29: Record slug change redirect to ensure no broken links
+                $old_slug = $trek['slug'] ?? '';
+                if (!empty($old_slug) && !empty($slug) && $old_slug !== $slug) {
+                    $redir_check = $db->prepare("SELECT id FROM trek_slug_redirects WHERE old_slug = ? AND new_slug = ? LIMIT 1");
+                    $redir_check->execute([$old_slug, $slug]);
+                    if (!$redir_check->fetchColumn()) {
+                        $db->prepare("INSERT INTO trek_slug_redirects (trek_id, old_slug, new_slug) VALUES (?, ?, ?)")
+                           ->execute([$id, $old_slug, $slug]);
+                    }
+                }
 
                 $set_clauses = [];
                 $params = [];
@@ -385,11 +408,19 @@ try {
                             </select>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label class="form-label">Trek Distance (km) *</label>
                             <input type="number" step="0.1" name="trek_distance" class="form-control" required value="<?php echo htmlspecialchars($trek['trek_distance']); ?>">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <label class="form-label">Starting Point</label>
+                            <input type="text" name="starting_point" class="form-control" placeholder="e.g. Bangalore / Trek Base" value="<?php echo htmlspecialchars($trek['starting_point'] ?? ''); ?>">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Best Season / Time</label>
+                            <input type="text" name="best_season" class="form-control" placeholder="e.g. Sept - Feb / Post-Monsoon" value="<?php echo htmlspecialchars($trek['best_season'] ?? ''); ?>">
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-check mt-4 pt-2">
                                 <input type="checkbox" name="featured" class="form-check-input" id="featured_chk" <?php echo $trek['featured'] == 1 ? 'checked' : ''; ?>>
                                 <label class="form-check-label fw-bold" for="featured_chk">Featured Trek</label>
@@ -665,8 +696,9 @@ try {
                             <textarea name="things_to_carry" class="form-control" rows="3"><?php echo htmlspecialchars($trek['things_to_carry']); ?></textarea>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">General Pick-up Description</label>
-                            <input type="text" name="pickup_points_txt" class="form-control" value="<?php echo htmlspecialchars($trek['pickup_points_txt'] ?? ''); ?>">
+                            <label class="form-label">General Pick-up Description <span class="badge bg-secondary ms-2" style="font-size: 0.72rem;">Deprecated</span></label>
+                            <input type="text" name="pickup_points_txt" class="form-control" value="<?php echo htmlspecialchars($trek['pickup_points_txt'] ?? ''); ?>" placeholder="Legacy text fallback only">
+                            <small class="text-muted d-block mt-1"><i class="fas fa-info-circle me-1 text-success"></i>Structured pickup points with timings, Google Maps landmarks, and routes are configured under <a href="pickups.php?trek_id=<?php echo $id; ?>" class="fw-bold text-success text-decoration-none">Manage Pickups</a>.</small>
                         </div>
                         
                         <div class="col-md-12">
@@ -743,6 +775,15 @@ try {
                                 <span id="trek_meta_desc_counter" class="badge bg-light text-muted border">150–155 chars</span>
                             </label>
                             <textarea name="meta_description" id="trek_meta_description" class="form-control" rows="2" placeholder="Book the scenic Kudremukh peak trek in Chikmagalur with Karnataka Trekkers. Includes meals, certified guides, tent stays, and bus transfers from Bangalore." data-seo-counter="trek_meta_desc_counter" data-seo-min="150" data-seo-max="155"><?php echo htmlspecialchars($trek['meta_description'] ?? ''); ?></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-switch p-2 border rounded bg-white">
+                                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_indexed" id="is_indexed" value="1" <?php echo (!isset($trek['is_indexed']) || (int)$trek['is_indexed'] === 1) ? 'checked' : ''; ?>>
+                                <label class="form-check-label fw-semibold" for="is_indexed">
+                                    <i class="fas fa-search me-1 text-primary"></i> Index this trek in search engines (sets <code>robots: index, follow</code> and adds to XML Sitemap)
+                                </label>
+                            </div>
                         </div>
 
                         <!-- 10-12 Tags Manager -->

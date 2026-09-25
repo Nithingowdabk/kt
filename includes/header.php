@@ -20,15 +20,19 @@ $default_desc = get_setting('seo_default_desc', DEFAULT_META_DESC);
 $default_keywords = get_setting('seo_default_keywords', DEFAULT_META_KEYWORDS);
 $site_name = get_setting('site_name', SITE_NAME);
 
-// Fallback SEO Meta Tags
-$site_title = isset($page_title) ? $page_title . ' | ' . $site_name : $default_title;
-$meta_title = $meta_title ?? $default_title;
+// Dynamic SEO Title Priority: meta_title -> page_title | site_name -> default_title
+if (!empty($meta_title)) {
+    $site_title = $meta_title;
+} else {
+    $site_title = isset($page_title) ? $page_title . ' | ' . $site_name : $default_title;
+}
 $meta_desc = $meta_desc ?? $default_desc;
 $meta_keywords = $meta_keywords ?? $default_keywords;
 
-// Build canonical URL
-$current_url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-$canonical_url = $canonical_url ?? $current_url;
+// Build canonical URL (clean without accidental query parameters)
+$clean_req_uri = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+$default_canonical = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) === 'on' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $clean_req_uri;
+$canonical_url = $canonical_url ?? $default_canonical;
 $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
 ?>
 <!DOCTYPE html>
@@ -40,13 +44,15 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
+    <!-- Search Engine Indexing Directives -->
+    <meta name="robots" content="<?php echo htmlspecialchars($robots_meta ?? ($meta_robots ?? 'index, follow')); ?>">
+
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="QvgotIYffLzTAAXQZ6YdBi_5A6Zk4aHWttaVeZSSYfg">
     <meta name="google-site-verification" content="sbI_34xPrr4TztluniYs6PzBYMceQjfz-zvbONkh4FI">
 
     <!-- Primary Meta Tags -->
     <title><?php echo htmlspecialchars($site_title); ?></title>
-    <meta name="title" content="<?php echo htmlspecialchars($meta_title); ?>">
     <meta name="description" content="<?php echo htmlspecialchars($meta_desc); ?>">
     <meta name="keywords" content="<?php echo htmlspecialchars($meta_keywords); ?>">
     <meta name="author" content="<?php echo htmlspecialchars($site_name); ?>">
@@ -101,16 +107,20 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     <!-- Preload Critical Brand Font -->
     <link rel="preload" href="<?php echo SITE_URL; ?>/assets/fonts/outfit.woff2" as="font" type="font/woff2" crossorigin>
 
-    <!-- Preload Critical Hero LCP Image for Homepage -->
+    <!-- Preload Critical Hero LCP Image -->
     <?php 
-    $current_script = basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
-    $req_uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-    $is_home = ($current_script === 'index.php' || empty($current_script) || $req_uri === '/' || $req_uri === '/index.php');
-    if ($is_home): 
+    if (!empty($preload_hero_image)): 
+    ?>
+    <link rel="preload" as="image" href="<?php echo htmlspecialchars($preload_hero_image); ?>" fetchpriority="high">
+    <?php else:
+        $current_script = basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
+        $req_uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $is_home = ($current_script === 'index.php' || $req_uri === '/' || $req_uri === '/index.php');
+        if ($is_home):
     ?>
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg-mobile.webp" media="(max-width: 768px)" type="image/webp" fetchpriority="high">
     <link rel="preload" as="image" href="<?php echo SITE_URL; ?>/assets/images/hero-bg.webp" media="(min-width: 769px)" type="image/webp" fetchpriority="high">
-    <?php endif; ?>
+    <?php endif; endif; ?>
 
     <!-- Inlined Critical Above-the-Fold CSS -->
     <style id="critical-css">
@@ -595,7 +605,8 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             gap: 15px;
             min-width: 260px;
             max-width: 260px;
-            height: 110px;
+            min-height: 110px;
+            height: auto;
             flex: 0 0 auto;
             margin: 0 15px;
             text-align: center;
@@ -668,6 +679,224 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             font-display: swap;
             src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2') format('woff2');
         }
+
+        /* Critical Quick Facts CSS to eliminate CLS */
+        .details-quick-facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+            margin-top: 20px;
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+            justify-content: center;
+        }
+        .details-quick-fact-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            min-height: 120px;
+            height: 125px;
+            box-sizing: border-box;
+        }
+        .details-quick-fact-icon {
+            font-size: 32px;
+            color: var(--primary-color);
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .details-quick-fact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            width: 100%;
+        }
+        .details-quick-fact-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .details-quick-fact-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+            font-family: var(--font-heading);
+        }
+        @media (max-width: 768px) {
+            .details-quick-facts-grid {
+                grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+                gap: 8px;
+                margin-bottom: 15px;
+                margin-top: 12px;
+            }
+            .details-quick-fact-card {
+                padding: 10px 6px;
+                height: 105px;
+                min-height: 105px;
+                border-radius: 12px;
+            }
+            .details-quick-fact-icon { font-size: 24px !important; height: 28px !important; }
+            .details-quick-fact-label { font-size: 0.62rem !important; }
+            .details-quick-fact-value { font-size: 0.95rem !important; }
+            body { padding-bottom: 75px; } /* Buffer for mobile sticky CTA bar */
+        }
+        /* Critical Breadcrumbs CSS */
+        .breadcrumbs-nav {
+            padding: 10px 0;
+            font-size: 0.85rem;
+        }
+        .breadcrumb-list {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            gap: 6px;
+            align-items: center;
+        }
+        .breadcrumb-item {
+            display: inline-flex;
+            align-items: center;
+            color: #64748b;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            font-size: 1rem;
+            line-height: 1;
+            color: #94a3b8;
+            padding-right: 6px;
+        }
+        .breadcrumb-item a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        .breadcrumb-item.active {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Critical Responsive Display Utilities (prevents FOUC before Bootstrap loads) */
+        @media (max-width: 767.98px) {
+            .d-none, .d-md-block { display: none !important; }
+            .d-md-none { display: block !important; }
+        }
+        @media (min-width: 768px) {
+            .d-md-none { display: none !important; }
+            .d-md-block { display: block !important; }
+        }
+
+        /* Critical Gallery Stabilization CSS (Eliminates Mobile CLS) */
+        .hero-mobile-gallery {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            margin-top: 16px;
+            margin-bottom: 20px;
+            background-color: #f1f5f9;
+            contain: layout paint;
+        }
+        .hero-mobile-gallery-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .hero-mobile-gallery-track::-webkit-scrollbar { display: none; }
+        .hero-mobile-slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+            overflow: hidden;
+            position: relative;
+        }
+        .hero-mobile-slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .hero-mobile-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            aspect-ratio: 16 / 10;
+        }
+        .hero-masonry-badges {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-masonry-gallery {
+                margin-top: 24px;
+                margin-bottom: 30px;
+            }
+            .hero-masonry-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                gap: 8px;
+                height: clamp(360px, 42vh, 480px);
+                position: relative;
+                border-radius: 18px;
+                overflow: hidden;
+                background-color: #f1f5f9;
+            }
+            .hero-masonry-large {
+                grid-column: 1 / 3;
+                grid-row: 1 / 3;
+                position: relative;
+                overflow: hidden;
+            }
+            .hero-masonry-small-1 { grid-column: 3 / 4; grid-row: 1 / 2; }
+            .hero-masonry-small-2 { grid-column: 4 / 5; grid-row: 1 / 2; }
+            .hero-masonry-small-3 { grid-column: 3 / 4; grid-row: 2 / 3; }
+            .hero-masonry-small-4 { grid-column: 4 / 5; grid-row: 2 / 3; }
+            .hero-masonry-small { position: relative; overflow: hidden; }
+            .hero-masonry-grid img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center center;
+                display: block;
+            }
+        }
     </style>
 
     <!-- Non-Blocking Stylesheets (media="print" trick loads async, onload swaps to screen) -->
@@ -691,11 +920,13 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
     <?php if (isset($extra_head)) echo $extra_head; ?>
 </head>
 <?php
-// Flush <head> early so browser starts fetching preloads immediately
-if (ob_get_level() > 0) {
-    @ob_flush();
+// Flush <head> early in web requests so browser starts fetching preloads immediately
+if (php_sapi_name() !== 'cli') {
+    if (ob_get_level() > 0) {
+        @ob_flush();
+    }
+    @flush();
 }
-@flush();
 ?>
 <body>
 <?php include_once __DIR__ . '/navbar.php'; ?>

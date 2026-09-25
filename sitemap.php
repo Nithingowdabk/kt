@@ -83,7 +83,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <!-- 2. Dynamic Active Treks -->
     <?php
     try {
-        $trek_stmt = $db->query("SELECT slug, title, image, updated_at, created_at FROM treks WHERE status = 'Active' ORDER BY id DESC");
+        $trek_stmt = $db->query("SELECT slug, title, image, updated_at, created_at FROM treks WHERE status = 'Active' AND (is_indexed = 1 OR is_indexed IS NULL) ORDER BY id DESC");
         while ($trek = $trek_stmt->fetch()):
             $lastmod = !empty($trek['updated_at']) ? date('Y-m-d', strtotime($trek['updated_at'])) : (!empty($trek['created_at']) ? date('Y-m-d', strtotime($trek['created_at'])) : $today);
             $img_url = !empty($trek['image']) ? (SITE_URL . '/' . $trek['image']) : '';
@@ -110,7 +110,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     <!-- 3. Dynamic Trek Categories -->
     <?php
     try {
-        $cat_stmt = $db->query("SELECT slug, name, updated_at, created_at FROM trek_categories WHERE status = 'Active' ORDER BY id DESC");
+        $cat_stmt = $db->query("SELECT slug, category_name, updated_at, created_at FROM trek_categories WHERE status = 'Active' ORDER BY id DESC");
         while ($cat = $cat_stmt->fetch()):
             $cat_lastmod = !empty($cat['updated_at']) ? date('Y-m-d', strtotime($cat['updated_at'])) : $today;
     ?>

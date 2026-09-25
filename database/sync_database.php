@@ -70,6 +70,9 @@ $schema_map = [
         'focus_keyphrase' => "VARCHAR(150) DEFAULT NULL",
         'excerpt' => "TEXT DEFAULT NULL",
         'image_alt' => "VARCHAR(255) DEFAULT NULL",
+        'starting_point' => "VARCHAR(150) DEFAULT NULL",
+        'best_season' => "VARCHAR(100) DEFAULT NULL",
+        'is_indexed' => "TINYINT(1) DEFAULT 1",
         'tags' => "TEXT DEFAULT NULL"
     ],
     'blogs' => [
@@ -224,6 +227,16 @@ $table_definitions = [
         `challenges_faced` TEXT DEFAULT NULL,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (`trek_date_id`) REFERENCES `trek_dates`(`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+    'trek_slug_redirects' => "CREATE TABLE IF NOT EXISTS `trek_slug_redirects` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `trek_id` INT NULL,
+        `old_slug` VARCHAR(255) NOT NULL,
+        `new_slug` VARCHAR(255) NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY `idx_old_slug` (`old_slug`),
+        KEY `idx_trek_id` (`trek_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 ];
 
@@ -269,6 +282,12 @@ foreach ($schema_map as $table => $columns) {
     }
     output_line("✓ Table <code>{$table}</code> schema is fully verified and up to date.", "info");
 }
+
+// Step 2b: Ensure Draft status exists on treks and blogs
+ensure_enum_value($db, 'treks', 'status', 'Draft', "ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active'");
+ensure_enum_value($db, 'blogs', 'status', 'Draft', "ENUM('Active', 'Inactive', 'Draft') NOT NULL DEFAULT 'Active'");
+output_line("✓ Table status ENUM values verified (Active, Inactive, Draft).", "success");
+
 
 // Step 3: Insert default seed settings
 output_line("<br><b>Step 3: Checking default settings & administrator accounts...</b>", "info");

@@ -8,6 +8,10 @@ Options -Indexes
 # 0. XML Sitemap & Robots routing
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+# 0b. Critical 301 Permanent Redirects for Corrected Trek Slugs
+RewriteRule ^treks/shivagange-sunrise-trek-from-baangalore/?$ /treks/shivagange-sunrise-trek-from-bangalore [R=301,L]
+RewriteRule ^treks/netravathi-trek-from-banaglore/?$ /treks/netravathi-trek-from-bangalore [R=301,L]
+
 # 1. Route Clean Trek Details: /treks/slug-name -> /treks/details.php?slug=slug-name
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
