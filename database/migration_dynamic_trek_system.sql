@@ -27,6 +27,12 @@ ALTER TABLE `blogs` MODIFY COLUMN `meta_title` VARCHAR(255) DEFAULT NULL;
 ALTER TABLE `blogs` MODIFY COLUMN `meta_description` TEXT DEFAULT NULL;
 ALTER TABLE `blogs` MODIFY COLUMN `focus_keyphrase` VARCHAR(255) DEFAULT NULL;
 
+-- 2c. Clear orphaned or expired batch associations on pickup points so they apply across all trek dates
+UPDATE `pickup_points` pp 
+LEFT JOIN `trek_dates` td ON pp.trek_date_id = td.id 
+SET pp.trek_date_id = NULL 
+WHERE pp.trek_date_id IS NOT NULL AND (td.id IS NULL OR td.start_date < CURDATE());
+
 -- 3. Seed initial 301 slug redirects for known typos
 INSERT IGNORE INTO `trek_slug_redirects` (`old_slug`, `new_slug`) VALUES
 ('shivagange-sunrise-trek-from-baangalore', 'shivagange-sunrise-trek-from-bangalore'),

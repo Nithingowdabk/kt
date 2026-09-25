@@ -297,6 +297,14 @@ try {
     output_line("Note on SEO column expansion: " . $e->getMessage(), "info");
 }
 
+// Step 2d: Ensure pickup points apply to all trek schedules (clear orphaned/expired batch associations)
+try {
+    $db->exec("UPDATE `pickup_points` pp LEFT JOIN `trek_dates` td ON pp.trek_date_id = td.id SET pp.trek_date_id = NULL WHERE pp.trek_date_id IS NOT NULL AND (td.id IS NULL OR td.start_date < CURDATE())");
+    output_line("✓ Pickup points verified and linked to all active trek schedules.", "success");
+} catch (Exception $e) {
+    output_line("Note on pickup points sync: " . $e->getMessage(), "info");
+}
+
 
 // Step 3: Insert default seed settings
 output_line("<br><b>Step 3: Checking default settings & administrator accounts...</b>", "info");

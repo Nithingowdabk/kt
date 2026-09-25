@@ -160,7 +160,7 @@ try {
     $trek_dates = $dates_stmt->fetchAll();
 
     // 3. Fetch Pickup Points
-    $pickup_stmt = $db->prepare("SELECT * FROM pickup_points WHERE trek_id = ?");
+    $pickup_stmt = $db->prepare("SELECT * FROM pickup_points WHERE trek_id = ? ORDER BY time ASC, id ASC");
     $pickup_stmt->execute([$trek_id]);
     $pickup_points = $pickup_stmt->fetchAll();
 

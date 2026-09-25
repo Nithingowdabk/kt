@@ -161,17 +161,49 @@ $(document).ready(function() {
         $('#trek_date_id').on('change', function() {
             var selectedDateId = $(this).val();
             var pickupSelect = $('#pickup_point_id');
+            var currentVal = pickupSelect.val();
             
             pickupSelect.empty();
             
+            // Check if there are any options specifically assigned to this batch date
+            var hasDateSpecificOptions = false;
+            if (selectedDateId) {
+                originalPickupOptions.each(function() {
+                    var optionDateId = $(this).attr('data-date-id');
+                    if (optionDateId && String(optionDateId) === String(selectedDateId)) {
+                        hasDateSpecificOptions = true;
+                        return false;
+                    }
+                });
+            }
+            
             originalPickupOptions.each(function() {
                 var optionDateId = $(this).attr('data-date-id');
-                if ($(this).val() === '' || optionDateId === undefined || optionDateId === '' || optionDateId === selectedDateId) {
+                var val = $(this).val();
+                
+                if (val === '') {
+                    // Always keep the default placeholder option
+                    pickupSelect.append($(this).clone());
+                } else if (!selectedDateId) {
+                    // No date selected yet: display all available trek pickup points
+                    pickupSelect.append($(this).clone());
+                } else if (hasDateSpecificOptions) {
+                    // If batch-specific pickups exist, show only those for this batch + general unassigned
+                    if (!optionDateId || String(optionDateId) === String(selectedDateId)) {
+                        pickupSelect.append($(this).clone());
+                    }
+                } else {
+                    // Fallback: If no batch-specific pickups exist, all trek pickup points are available
                     pickupSelect.append($(this).clone());
                 }
             });
             
-            pickupSelect.val('');
+            // Preserve selected pickup point if still present in options
+            if (currentVal && pickupSelect.find('option[value="' + currentVal + '"]').length > 0) {
+                pickupSelect.val(currentVal);
+            } else {
+                pickupSelect.val('');
+            }
 
             // Dynamic Price Updater based on batch price and package type
             var packageType = $('input[name="package_type"]:checked').val() || $('#package_type_hidden').val() || 'with_transport';
