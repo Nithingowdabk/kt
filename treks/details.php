@@ -205,12 +205,22 @@ try {
     $video_stmt->execute([$trek_id]);
     $videos = $video_stmt->fetchAll();
 
-    // Override main image if featured image exists
+    // Override main image if featured image exists and is valid on disk
     $featured_image = null;
     foreach ($gallery as $img) {
-        if ($img['is_featured'] == 1) {
-            $featured_image = $img['image_path'];
-            break;
+        if (!empty($img['is_featured'])) {
+            $fpath = ltrim($img['image_path'] ?? '', '/\\');
+            if (!empty($fpath)) {
+                if (str_starts_with($fpath, 'http://') || str_starts_with($fpath, 'https://')) {
+                    $featured_image = $fpath;
+                    break;
+                }
+                $abs_f = dirname(__DIR__) . '/' . $fpath;
+                if (is_file($abs_f) && filesize($abs_f) > 0) {
+                    $featured_image = $fpath;
+                    break;
+                }
+            }
         }
     }
     if ($featured_image) {
@@ -250,12 +260,25 @@ $meta_title = !empty($trek['meta_title']) ? $trek['meta_title'] : ($trek['title'
 $meta_desc = !empty($trek['meta_description']) ? truncate_meta_description($trek['meta_description'], 300) : (!empty($trek['excerpt']) ? truncate_meta_description($trek['excerpt'], 160) : truncate_meta_description($trek['description'], 160));
 $canonical_url = SITE_URL . '/treks/' . $trek['slug'];
 $is_trek_indexed = (!isset($trek['is_indexed']) || (int)$trek['is_indexed'] === 1) && ($trek['status'] === 'Active');
-if (!empty($gallery) && !empty($gallery[0]['image_path'])) {
-    $hero_img_path = $gallery[0]['image_path'];
-} elseif (!empty($trek['image'])) {
-    $hero_img_path = $trek['image'];
-} else {
-    $hero_img_path = 'assets/images/default-trek.jpg';
+// Find first valid existing hero image
+$hero_img_path = null;
+if (!empty($gallery)) {
+    foreach ($gallery as $g_item) {
+        $check_rel = ltrim($g_item['image_path'] ?? '', '/\\');
+        if (!empty($check_rel) && is_file(__DIR__ . '/../' . $check_rel) && filesize(__DIR__ . '/../' . $check_rel) > 0) {
+            $hero_img_path = $check_rel;
+            break;
+        }
+    }
+}
+if (!$hero_img_path && !empty($trek['image'])) {
+    $check_cov = ltrim($trek['image'], '/\\');
+    if (is_file(__DIR__ . '/../' . $check_cov) && filesize(__DIR__ . '/../' . $check_cov) > 0) {
+        $hero_img_path = $check_cov;
+    }
+}
+if (!$hero_img_path) {
+    $hero_img_path = !empty($trek['image']) ? $trek['image'] : 'assets/images/default-trek.jpg';
 }
 $preload_hero_image = SITE_URL . '/' . $hero_img_path;
 $meta_keywords = !empty($trek['tags']) ? $trek['tags'] : (!empty($trek['focus_keyphrase']) ? $trek['focus_keyphrase'] : null);
@@ -545,15 +568,31 @@ $featured_img = !empty($trek['image']) ? $trek['image'] : 'assets/images/default
 $gallery_items = [];
 if (!empty($gallery)) {
     foreach ($gallery as $img) {
-        $gallery_items[] = $img['image_path'];
+        $raw_path = $img['image_path'] ?? '';
+        if (empty($raw_path)) continue;
+        
+        $clean_path = ltrim($raw_path, '/\\');
+        // If external URL or local file that actually exists on disk
+        if (str_starts_with($clean_path, 'http://') || str_starts_with($clean_path, 'https://')) {
+            $gallery_items[] = $clean_path;
+        } else {
+            $abs_file = dirname(__DIR__) . '/' . $clean_path;
+            if (is_file($abs_file) && filesize($abs_file) > 0) {
+                $gallery_items[] = $clean_path;
+            }
+        }
     }
 }
+// Fallback if gallery is empty or all gallery images were missing
 if (empty($gallery_items)) {
     $gallery_items[] = $featured_img;
 }
 
 // Prepare gallery data as JSON for JS auto-rotation
 $gallery_json = json_encode(array_map(function($path) {
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        return $path;
+    }
     return SITE_URL . '/' . $path;
 }, $gallery_items));
 $total_images = count($gallery_items);
@@ -567,14 +606,15 @@ $total_images = count($gallery_items);
             $visible_count = min($total_images, 5);
             for ($i = 0; $i < $visible_count; $i++):
                 $img_path = $gallery_items[$i];
+                $img_src = (str_starts_with($img_path, 'http://') || str_starts_with($img_path, 'https://')) ? $img_path : (SITE_URL . '/' . $img_path);
                 $slot_class = ($i === 0) ? 'hero-masonry-large' : 'hero-masonry-small hero-masonry-small-' . $i;
                 $lazy = ($i === 0) ? '' : ' loading="lazy"';
                 $img_w = ($i === 0) ? 800 : 400;
                 $img_h = ($i === 0) ? 450 : 225;
             ?>
                 <div class="<?php echo $slot_class; ?>">
-                    <a href="<?php echo SITE_URL . '/' . $img_path; ?>" class="glightbox" data-gallery="trek-main-gallery">
-                        <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="<?php echo $img_w; ?>" height="<?php echo $img_h; ?>" alt="<?php echo htmlspecialchars($trek['title']); ?> gallery image <?php echo $i + 1; ?>"<?php echo $lazy; ?> style="aspect-ratio: 16/9; object-fit: cover;">
+                    <a href="<?php echo htmlspecialchars($img_src); ?>" class="glightbox" data-gallery="trek-main-gallery">
+                        <img src="<?php echo htmlspecialchars($img_src); ?>" width="<?php echo $img_w; ?>" height="<?php echo $img_h; ?>" alt="<?php echo htmlspecialchars($trek['title']); ?> gallery image <?php echo $i + 1; ?>"<?php echo $lazy; ?> style="aspect-ratio: 16/9; object-fit: cover;" onerror="this.onerror=null; this.closest('.hero-masonry-small')?.remove();">
                     </a>
                 </div>
             <?php endfor; ?>
@@ -591,10 +631,12 @@ $total_images = count($gallery_items);
 <!-- Mobile Swipeable Gallery (hidden on desktop) -->
 <div class="hero-mobile-gallery d-md-none">
     <div class="hero-mobile-gallery-track">
-        <?php foreach ($gallery_items as $index => $img_path): ?>
+        <?php foreach ($gallery_items as $index => $img_path): 
+            $img_src = (str_starts_with($img_path, 'http://') || str_starts_with($img_path, 'https://')) ? $img_path : (SITE_URL . '/' . $img_path);
+        ?>
             <div class="hero-mobile-slide">
-                <a href="<?php echo SITE_URL . '/' . $img_path; ?>" class="glightbox" data-gallery="trek-main-gallery">
-                    <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="600" height="375" alt="<?php echo htmlspecialchars($trek['title']); ?> mobile image <?php echo $index + 1; ?>"<?php echo $index >= 1 ? ' loading="lazy"' : ' fetchpriority="high"'; ?> style="aspect-ratio: 16/10; object-fit: cover;">
+                <a href="<?php echo htmlspecialchars($img_src); ?>" class="glightbox" data-gallery="trek-main-gallery">
+                    <img src="<?php echo htmlspecialchars($img_src); ?>" width="600" height="375" alt="<?php echo htmlspecialchars($trek['title']); ?> mobile image <?php echo $index + 1; ?>"<?php echo $index >= 1 ? ' loading="lazy"' : ' fetchpriority="high"'; ?> style="aspect-ratio: 16/10; object-fit: cover;" onerror="this.onerror=null; this.closest('.hero-mobile-slide')?.remove();">
                 </a>
             </div>
         <?php endforeach; ?>
@@ -611,9 +653,11 @@ $total_images = count($gallery_items);
 <?php if (count($gallery_items) > 1): ?>
 <div class="gallery-thumbnails-wrapper container mb-3">
     <div class="gallery-thumbnails-strip">
-        <?php foreach ($gallery_items as $index => $img_path): ?>
-            <button class="gallery-thumb-btn<?php echo $index === 0 ? ' active' : ''; ?>" data-index="<?php echo $index; ?>" data-src="<?php echo SITE_URL . '/' . $img_path; ?>" aria-label="View image <?php echo $index + 1; ?>">
-                <img src="<?php echo SITE_URL . '/' . $img_path; ?>" width="120" height="80" alt="<?php echo htmlspecialchars($trek['title']); ?> thumbnail <?php echo $index + 1; ?>" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover;">
+        <?php foreach ($gallery_items as $index => $img_path): 
+            $img_src = (str_starts_with($img_path, 'http://') || str_starts_with($img_path, 'https://')) ? $img_path : (SITE_URL . '/' . $img_path);
+        ?>
+            <button class="gallery-thumb-btn<?php echo $index === 0 ? ' active' : ''; ?>" data-index="<?php echo $index; ?>" data-src="<?php echo htmlspecialchars($img_src); ?>" aria-label="View image <?php echo $index + 1; ?>">
+                <img src="<?php echo htmlspecialchars($img_src); ?>" width="120" height="80" alt="<?php echo htmlspecialchars($trek['title']); ?> thumbnail <?php echo $index + 1; ?>" loading="lazy" style="aspect-ratio: 16/9; object-fit: cover;" onerror="this.onerror=null; this.closest('.gallery-thumb-btn')?.remove();">
             </button>
         <?php endforeach; ?>
     </div>

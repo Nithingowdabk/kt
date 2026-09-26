@@ -4,7 +4,12 @@ require_once __DIR__ . '/../../includes/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/auth.php';
 
-require_admin_login();
+if (!is_admin_logged_in()) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'message' => 'Admin session expired. Please log in again.']);
+    exit();
+}
 
 header('Content-Type: application/json');
 
@@ -124,19 +129,35 @@ try {
 
     if ($action === 'delete') {
         $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            throw new Exception("Invalid image ID");
+        }
+
         $stmt = $db->prepare("SELECT image_path, thumbnail_path FROM trek_gallery WHERE id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch();
         if ($row) {
-            $path = __DIR__ . '/../../' . $row['image_path'];
-            $thumb = __DIR__ . '/../../' . $row['thumbnail_path'];
-            if (file_exists($path)) unlink($path);
-            if ($row['thumbnail_path'] && file_exists($thumb)) unlink($thumb);
+            $rel_img = ltrim($row['image_path'] ?? '', '/\\');
+            $rel_thumb = ltrim($row['thumbnail_path'] ?? '', '/\\');
+
+            if (!empty($rel_img)) {
+                $path = __DIR__ . '/../../' . $rel_img;
+                if (is_file($path)) {
+                    @unlink($path);
+                }
+            }
+            if (!empty($rel_thumb)) {
+                $thumb = __DIR__ . '/../../' . $rel_thumb;
+                if (is_file($thumb)) {
+                    @unlink($thumb);
+                }
+            }
             
             $db->prepare("DELETE FROM trek_gallery WHERE id = ?")->execute([$id]);
-            echo json_encode(['status' => 'success']);
+            echo json_encode(['status' => 'success', 'message' => 'Image deleted successfully']);
         } else {
-            throw new Exception("Image not found");
+            // Already deleted or non-existent - succeed idempotently so UI cleans up
+            echo json_encode(['status' => 'success', 'message' => 'Image already removed']);
         }
         exit;
     }

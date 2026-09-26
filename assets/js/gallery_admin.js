@@ -2,8 +2,8 @@ $(document).ready(function() {
     const _trekId = typeof TREK_ID !== 'undefined' ? TREK_ID : 0;
     const _sessionToken = typeof SESSION_TOKEN !== 'undefined' ? SESSION_TOKEN : '';
     const SITE_URL = typeof JS_SITE_URL !== 'undefined' ? JS_SITE_URL : '';
-    const API_URL = '../treks/gallery_api.php';
-    const VIDEO_API_URL = '../treks/video_api.php';
+    const API_URL = (SITE_URL ? SITE_URL : '') + '/admin/treks/gallery_api.php';
+    const VIDEO_API_URL = (SITE_URL ? SITE_URL : '') + '/admin/treks/video_api.php';
 
     function getQueryString() {
         if (_trekId > 0) return `?trek_id=${_trekId}`;
@@ -438,16 +438,42 @@ $(document).ready(function() {
         if (!confirm('Are you sure you want to delete this image?')) return;
         let btn = $(this);
         let id = btn.data('id');
+        let card = btn.closest('.gallery-item');
         
-        btn.closest('.gallery-item').fadeOut(300, function() {
-            $(this).remove();
-            updateGalleryCount();
-            if ($('#gallery-grid .gallery-item').length === 0) {
-                $('#gallery-grid').html('<div class="col-12 text-center text-muted py-5 empty-state"><i class="fas fa-images fa-3x mb-3 text-black-50"></i><br>No gallery images uploaded yet.</div>');
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+        $.ajax({
+            url: API_URL,
+            type: 'POST',
+            data: { action: 'delete', id: id },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    card.fadeOut(300, function() {
+                        $(this).remove();
+                        updateGalleryCount();
+                        if ($('#gallery-grid .gallery-item').length === 0) {
+                            $('#gallery-grid').html('<div class="col-12 text-center text-muted py-5 empty-state"><i class="fas fa-images fa-3x mb-3 text-black-50"></i><br>No gallery images uploaded yet.</div>');
+                        }
+                    });
+                } else {
+                    btn.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+                    alert('Could not delete image: ' + (res.message || 'Server error'));
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false).html('<i class="fas fa-trash"></i>');
+                let errText = 'Failed to delete image.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errText += ' ' + xhr.responseJSON.message;
+                } else if (xhr.status === 401 || xhr.status === 403) {
+                    errText += ' Admin session expired. Please refresh and log in.';
+                } else {
+                    errText += ' Status: ' + xhr.status + ' ' + xhr.statusText;
+                }
+                alert(errText);
             }
         });
-
-        $.post(API_URL, { action: 'delete', id: id });
     });
 
     // Lightbox
