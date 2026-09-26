@@ -1104,6 +1104,12 @@ h1, h2, h3, h4, h5, h6, p, a, span, li, td, th, label {
     }
 
     /* Trek listing grid — 2 columns in the filtered section */
+    #filterCollapse.collapse,
+    .collapse.d-lg-block {
+        display: block !important;
+        height: auto !important;
+        visibility: visible !important;
+    }
     .col-lg-9 .row .col-md-6 {
         flex: 0 0 50%;
         max-width: 50%;

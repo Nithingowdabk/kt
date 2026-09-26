@@ -534,6 +534,16 @@ h1, h2, h3, h4, h5, h6 {
     border-top: 1px solid #ECF0F1;
 }
 
+/* Filter Sidebar (Trek catalog page) */
+@media (min-width: 992px) {
+    #filterCollapse.collapse,
+    .collapse.d-lg-block {
+        display: block !important;
+        height: auto !important;
+        visibility: visible !important;
+    }
+}
+
 /* Detail Page Custom Styles */
 .trek-detail-header-bg {
     position: relative;

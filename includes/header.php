@@ -233,14 +233,19 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             .col-md-2 { flex: 0 0 auto; width: 16.66666667%; }
             .col-md-3 { flex: 0 0 auto; width: 25%; }
             .col-md-5 { flex: 0 0 auto; width: 41.66666667%; }
+            .col-md-6 { flex: 0 0 auto; width: 50%; }
         }
         @media (min-width: 992px) {
+            .col-lg-3 { flex: 0 0 auto; width: 25%; }
+            .col-lg-4 { flex: 0 0 auto; width: 33.33333333%; }
+            .col-lg-8 { flex: 0 0 auto; width: 66.66666667%; }
+            .col-lg-9 { flex: 0 0 auto; width: 75%; }
             .col-lg-10 { flex: 0 0 auto; width: 83.33333333%; }
         }
 
         /* Display Utilities to Prevent CLS */
         .d-none { display: none !important; }
-        .collapse:not(.show) { display: none !important; }
+        .collapse:not(.show) { display: none; }
 
         /* Navbar */
         .navbar-custom {
@@ -306,8 +311,14 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
         }
         @media (min-width: 992px) {
             .d-lg-none { display: none !important; }
+            .d-lg-block { display: block !important; }
             .d-lg-flex { display: flex !important; }
             .navbar-collapse { display: flex !important; }
+            .collapse.d-lg-block, #filterCollapse {
+                display: block !important;
+                height: auto !important;
+                visibility: visible !important;
+            }
         }
         .navbar-call-btn {
             width: 40px;
