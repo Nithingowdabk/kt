@@ -95,119 +95,65 @@ require_once __DIR__ . '/config.php';
         <?php endif; ?>
 
         <!-- Copyright & Credits -->
-        <div class="row align-items-center footer-bottom py-3">
-            <div class="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0">
-                <p class="mb-0 text-white-50" style="font-size: 0.88rem;">&copy; <?php echo date('Y'); ?> <span class="text-white fw-semibold"><?php echo SITE_NAME; ?></span>. All rights reserved.</p>
-            </div>
-            <div class="col-12 col-md-6 text-center text-md-end">
-                <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge-pill" title="Crafted with passion by nAItrons (naitrons.in)">
-                    <span class="naitrons-label">Powered by</span>
-                    <span class="naitrons-brand-capsule">
-                        <span class="naitrons-pulse-dot" aria-hidden="true"></span>
-                        <span class="naitrons-brand-name">n<span class="naitrons-brand-ai">AI</span>trons</span>
-                        <i class="fas fa-arrow-up-right-from-square naitrons-arrow-icon" aria-hidden="true"></i>
-                    </span>
-                </a>
+        <style>
+        .naitrons-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #FBF7EE 0%, #EFE3CE 100%);
+            color: #5C381E;
+            border: 1px solid #D6BE9E;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            box-shadow: 0 2px 8px rgba(60, 32, 10, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.25s ease;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+        .naitrons-badge:hover {
+            background: linear-gradient(135deg, #FFFDF9 0%, #F5E8D4 100%);
+            color: #3D200E;
+            border-color: #BFA078;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(60, 32, 10, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        .naitrons-badge .naitrons-label {
+            opacity: 0.88;
+            font-weight: 500;
+        }
+        .naitrons-badge .naitrons-brand {
+            color: #3D200E;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+        .naitrons-badge .naitrons-icon {
+            font-size: 0.68rem;
+            color: #7A4B29;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .naitrons-badge:hover .naitrons-icon {
+            transform: translate(1px, -1px);
+            color: #3D200E;
+        }
+        </style>
+        <div class="row">
+            <div class="col-12 text-center footer-bottom">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-2 gap-md-3">
+                    <p class="mb-0 text-white-50">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
+                    <span class="d-none d-md-inline text-white-50 opacity-50">&bull;</span>
+                    <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" title="Powered by Naitrons">
+                        <span class="naitrons-label">Powered by</span>
+                        <span class="naitrons-brand">Naitrons</span>
+                        <i class="fas fa-external-link-alt naitrons-icon"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </footer>
-
-<style>
-/* Aesthetic nAItrons Powered By Badge */
-.naitrons-badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 50px;
-    text-decoration: none !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-    vertical-align: middle;
-}
-.naitrons-badge-pill:hover {
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(255, 107, 0, 0.5);
-    box-shadow: 0 6px 24px rgba(255, 77, 0, 0.28), 0 0 14px rgba(255, 107, 0, 0.18);
-    transform: translateY(-2px);
-}
-.naitrons-label {
-    font-size: 0.74rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.75px;
-    color: rgba(255, 255, 255, 0.6);
-    transition: color 0.25s ease;
-}
-.naitrons-badge-pill:hover .naitrons-label {
-    color: rgba(255, 255, 255, 0.9);
-}
-.naitrons-brand-capsule {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 10px 3px 8px;
-    background: rgba(255, 77, 0, 0.14);
-    border: 1px solid rgba(255, 122, 26, 0.35);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-}
-.naitrons-badge-pill:hover .naitrons-brand-capsule {
-    background: rgba(255, 77, 0, 0.24);
-    border-color: rgba(255, 122, 26, 0.7);
-}
-.naitrons-pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #ff4d00;
-    box-shadow: 0 0 8px #ff4d00;
-    animation: naitronsPulse 2.2s infinite ease-in-out;
-}
-@keyframes naitronsPulse {
-    0%, 100% {
-        transform: scale(0.9);
-        opacity: 0.8;
-        box-shadow: 0 0 5px #ff4d00;
-    }
-    50% {
-        transform: scale(1.3);
-        opacity: 1;
-        box-shadow: 0 0 12px #ff7a1a, 0 0 18px rgba(255, 122, 26, 0.45);
-    }
-}
-.naitrons-brand-name {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #ffffff;
-    font-family: var(--font-heading, 'Outfit', sans-serif);
-    letter-spacing: 0.5px;
-    line-height: 1;
-}
-.naitrons-brand-ai {
-    background: linear-gradient(135deg, #ff4d00 0%, #ff8a00 50%, #ffa502 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-    letter-spacing: 0.8px;
-    filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.5));
-}
-.naitrons-arrow-icon {
-    font-size: 0.68rem;
-    color: #ff7a1a;
-    transition: transform 0.25s ease, color 0.25s ease;
-    margin-left: 1px;
-}
-.naitrons-badge-pill:hover .naitrons-arrow-icon {
-    transform: translate(2px, -2px);
-    color: #ffa502;
-}
-</style>
 
 <!-- JS dependencies: jQuery and Bootstrap Bundle (Deferred for Zero Main-Thread Blocking) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
