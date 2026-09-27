@@ -97,7 +97,15 @@ require_once __DIR__ . '/config.php';
         <!-- Copyright -->
         <div class="row">
             <div class="col-12 text-center footer-bottom">
-                <p class="mb-0">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Powered by <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-underline fw-semibold">Naitrons</a>.</p>
+                <p class="mb-0 d-inline-flex flex-wrap align-items-center justify-content-center gap-2">
+                    <span>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</span>
+                    <span class="d-inline-flex align-items-center gap-1">
+                        <span class="text-white-50">Powered by</span>
+                        <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="badge text-white text-decoration-none fw-bold px-2.5 py-1 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #FF6B00 0%, #E65100 100%); font-size: 0.82rem; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.25); transition: transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-1px) scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(255,107,0,0.5)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                            <i class="fas fa-bolt text-warning me-1"></i>Naitrons
+                        </a>
+                    </span>
+                </p>
             </div>
         </div>
     </div>
