@@ -1233,8 +1233,9 @@ h1, h2, h3, h4, h5, h6, p, a, span, li, td, th, label {
     font-weight: 800;
     color: #2D5A27;
 }
-.whatsapp-float-btn {
-    bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
+body:has(.fixed-bottom-booking-bar) .whatsapp-float-btn,
+body:has(.mobile-bottom-cta) .whatsapp-float-btn {
+    bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 /* Booking flow step indicator */

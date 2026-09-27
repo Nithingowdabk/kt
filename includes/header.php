@@ -158,13 +158,30 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             --font-body: 'Outfit', 'Outfit-Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         *, ::after, ::before { box-sizing: border-box; margin: 0; padding: 0; }
+        html {
+            height: 100%;
+            background-color: var(--dark-color);
+        }
         body {
+            min-height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
             font-family: var(--font-body);
             color: var(--text-color);
             background-color: #FCFDFD;
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
+        }
+        main#main-content {
+            flex: 1 0 auto;
+        }
+        .footer-section {
+            margin-top: auto;
+            width: 100%;
         }
         /* Grid System Essentials (Bootstrap 5 pixel-perfect to prevent CLS) */
         .container, .container-fluid {
@@ -767,7 +784,6 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
             .details-quick-fact-icon { font-size: 24px !important; height: 28px !important; }
             .details-quick-fact-label { font-size: 0.62rem !important; }
             .details-quick-fact-value { font-size: 0.95rem !important; }
-            body { padding-bottom: 75px; } /* Buffer for mobile sticky CTA bar */
         }
         /* Critical Breadcrumbs CSS */
         .breadcrumbs-nav {
@@ -912,16 +928,16 @@ $og_image = $og_image ?? (SITE_URL . '/assets/images/hero-bg.jpg');
 
     <!-- Non-Blocking Stylesheets (media="print" trick loads async, onload swaps to screen) -->
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.0" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.0" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.1" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.1" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <?php if (!empty($use_glightbox)): ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" media="print" onload="this.media='all'">
     <?php endif; ?>
     <noscript>
         <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css?v=5.3.3">
-        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.0">
-        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.0">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/style.min.css?v=2.2.1">
+        <link rel="stylesheet" href="<?php echo SITE_URL; ?>/assets/css/responsive.min.css?v=2.2.1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <?php if (!empty($use_glightbox)): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">

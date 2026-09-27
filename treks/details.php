@@ -560,6 +560,13 @@ body.calendar-open .mobile-bottom-cta {
 .package-card-option:hover {
     border-color: #28a745 !important;
 }
+/* Buffer for fixed bottom booking bar: placed inside footer so dark green extends completely with zero white gap */
+.footer-section {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.whatsapp-float-btn {
+    bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
+}
 </style>
 
 <!-- SECTION 1: HERO AREA (Gallery) -->

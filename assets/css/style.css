@@ -1353,7 +1353,7 @@ a, button, .btn, [role="button"] {
 
 @media (max-width: 768px) {
     .whatsapp-float-btn {
-        bottom: 85px;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
         right: 18px;
         padding: 12px;
         width: 52px;
@@ -1364,6 +1364,11 @@ a, button, .btn, [role="button"] {
     .whatsapp-float-btn i {
         font-size: 1.5rem;
     }
+}
+
+body:has(.fixed-bottom-booking-bar) .whatsapp-float-btn,
+body:has(.mobile-bottom-cta) .whatsapp-float-btn {
+    bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 /* Modal aesthetics override */
@@ -3065,10 +3070,6 @@ a, button, .btn, [role="button"] {
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
         margin-bottom: 2rem !important;
     }
-    
-    body {
-        padding-bottom: 80px !important; /* Space for sticky bottom CTA bar */
-    }
 }
 
 /* Universal Fixed Bottom Booking CTA Bar (Desktop + Tablet + Mobile) */
@@ -3095,10 +3096,6 @@ a, button, .btn, [role="button"] {
     font-weight: 800;
     color: var(--primary-color);
     line-height: 1.2;
-}
-
-body {
-    padding-bottom: 75px;
 }
 
 /* =========================================================================
