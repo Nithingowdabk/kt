@@ -94,66 +94,105 @@ require_once __DIR__ . '/config.php';
         </div>
         <?php endif; ?>
 
-        <!-- Copyright & Credits -->
-        <style>
-        .naitrons-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #FBF7EE 0%, #EFE3CE 100%);
-            color: #5C381E;
-            border: 1px solid #D6BE9E;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 0.82rem;
-            font-weight: 500;
-            letter-spacing: 0.2px;
-            box-shadow: 0 2px 8px rgba(60, 32, 10, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            transition: all 0.25s ease;
-            text-decoration: none !important;
-            cursor: pointer;
-        }
-        .naitrons-badge:hover {
-            background: linear-gradient(135deg, #FFFDF9 0%, #F5E8D4 100%);
-            color: #3D200E;
-            border-color: #BFA078;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(60, 32, 10, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-        }
-        .naitrons-badge .naitrons-label {
-            opacity: 0.88;
-            font-weight: 500;
-        }
-        .naitrons-badge .naitrons-brand {
-            color: #3D200E;
-            font-weight: 800;
-            letter-spacing: 0.4px;
-        }
-        .naitrons-badge .naitrons-icon {
-            font-size: 0.68rem;
-            color: #7A4B29;
-            transition: transform 0.2s ease, color 0.2s ease;
-        }
-        .naitrons-badge:hover .naitrons-icon {
-            transform: translate(1px, -1px);
-            color: #3D200E;
-        }
-        </style>
+        <!-- Copyright & Powered By Credits -->
         <div class="row">
-            <div class="col-12 text-center footer-bottom">
-                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-2 gap-md-3">
-                    <p class="mb-0 text-white-50">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
-                    <span class="d-none d-md-inline text-white-50 opacity-50">&bull;</span>
-                    <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" title="Powered by Naitrons">
-                        <span class="naitrons-label">Powered by</span>
-                        <span class="naitrons-brand">Naitrons</span>
-                        <i class="fas fa-external-link-alt naitrons-icon"></i>
-                    </a>
+            <div class="col-12 footer-bottom">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
+                    <p class="mb-0 text-white-50 small">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Developed with passion for adventure.</p>
+                    <div class="powered-by-container">
+                        <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" aria-label="Powered by naitrons (naitrons.in)">
+                            <span class="naitrons-badge-prefix">Powered by</span>
+                            <span class="naitrons-badge-brand">
+                                <svg class="naitrons-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z"/>
+                                </svg>
+                                naitrons
+                            </span>
+                            <span class="naitrons-badge-domain">naitrons.in</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </footer>
+
+<style>
+/* Powered by Naitrons - Aesthetic Beige & Dark Brown Badge */
+.powered-by-container {
+    display: inline-flex;
+    align-items: center;
+}
+.naitrons-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px 6px 12px;
+    background: linear-gradient(135deg, #F8F3EC 0%, #EFE5D8 100%);
+    border: 1px solid #DFCDBD;
+    border-radius: 999px;
+    text-decoration: none !important;
+    color: #382216 !important;
+    font-family: var(--font-heading), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.78rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    line-height: 1;
+}
+.naitrons-badge:hover {
+    background: linear-gradient(135deg, #FFFDF9 0%, #F5ECE0 100%);
+    border-color: #D3BCAB;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(56, 34, 22, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    color: #24140B !important;
+}
+.naitrons-badge-prefix {
+    color: #6E4E3A;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.3px;
+    opacity: 0.9;
+}
+.naitrons-badge-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #2E1B10;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: -0.2px;
+}
+.naitrons-icon {
+    color: #8C5B3E;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+.naitrons-badge:hover .naitrons-icon {
+    transform: rotate(45deg) scale(1.15);
+    color: #5A3520;
+}
+.naitrons-badge-domain {
+    background: rgba(56, 34, 22, 0.08);
+    color: #4A2D1C;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.70rem;
+    letter-spacing: 0.2px;
+    border: 1px solid rgba(56, 34, 22, 0.06);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.naitrons-badge:hover .naitrons-badge-domain {
+    background: rgba(56, 34, 22, 0.12);
+    color: #24140B;
+}
+@media (max-width: 767.98px) {
+    .naitrons-badge {
+        font-size: 0.75rem;
+        padding: 5px 12px 5px 10px;
+    }
+}
+</style>
 
 <!-- JS dependencies: jQuery and Bootstrap Bundle (Deferred for Zero Main-Thread Blocking) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
