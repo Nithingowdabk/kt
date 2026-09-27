@@ -96,10 +96,10 @@ require_once __DIR__ . '/config.php';
 
         <!-- Copyright & Powered By Credits -->
         <div class="row">
-            <div class="col-12 footer-bottom">
-                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
+            <div class="col-12 text-center footer-bottom">
+                <div class="d-flex flex-column align-items-center justify-content-center gap-2">
                     <p class="mb-0 text-white-50 small">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Developed with passion for adventure.</p>
-                    <div class="powered-by-container">
+                    <div class="powered-by-container mt-1">
                         <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" aria-label="Powered by Naitrons">
                             <span class="naitrons-badge-prefix">Powered by</span>
                             <span class="naitrons-badge-brand">
@@ -118,6 +118,9 @@ require_once __DIR__ . '/config.php';
 
 <style>
 /* Powered by Naitrons - Aesthetic Beige & Dark Brown Badge */
+.footer-bottom {
+    padding-bottom: 25px;
+}
 .powered-by-container {
     display: inline-flex;
     align-items: center;
@@ -126,7 +129,7 @@ require_once __DIR__ . '/config.php';
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    padding: 6px 14px;
+    padding: 6px 16px;
     background: linear-gradient(135deg, #F8F3EC 0%, #EFE5D8 100%);
     border: 1px solid #DFCDBD;
     border-radius: 999px;
