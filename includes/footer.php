@@ -100,15 +100,14 @@ require_once __DIR__ . '/config.php';
                 <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
                     <p class="mb-0 text-white-50 small">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Developed with passion for adventure.</p>
                     <div class="powered-by-container">
-                        <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" aria-label="Powered by naitrons (naitrons.in)">
+                        <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="naitrons-badge" aria-label="Powered by Naitrons">
                             <span class="naitrons-badge-prefix">Powered by</span>
                             <span class="naitrons-badge-brand">
                                 <svg class="naitrons-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                     <path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z"/>
                                 </svg>
-                                naitrons
+                                Naitrons
                             </span>
-                            <span class="naitrons-badge-domain">naitrons.in</span>
                         </a>
                     </div>
                 </div>
@@ -127,7 +126,7 @@ require_once __DIR__ . '/config.php';
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    padding: 6px 14px 6px 12px;
+    padding: 6px 14px;
     background: linear-gradient(135deg, #F8F3EC 0%, #EFE5D8 100%);
     border: 1px solid #DFCDBD;
     border-radius: 999px;
@@ -156,7 +155,7 @@ require_once __DIR__ . '/config.php';
 .naitrons-badge-brand {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     color: #2E1B10;
     font-weight: 700;
     font-size: 0.82rem;
@@ -171,25 +170,10 @@ require_once __DIR__ . '/config.php';
     transform: rotate(45deg) scale(1.15);
     color: #5A3520;
 }
-.naitrons-badge-domain {
-    background: rgba(56, 34, 22, 0.08);
-    color: #4A2D1C;
-    padding: 3px 8px;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.70rem;
-    letter-spacing: 0.2px;
-    border: 1px solid rgba(56, 34, 22, 0.06);
-    transition: background 0.2s ease, color 0.2s ease;
-}
-.naitrons-badge:hover .naitrons-badge-domain {
-    background: rgba(56, 34, 22, 0.12);
-    color: #24140B;
-}
 @media (max-width: 767.98px) {
     .naitrons-badge {
         font-size: 0.75rem;
-        padding: 5px 12px 5px 10px;
+        padding: 5px 12px;
     }
 }
 </style>
