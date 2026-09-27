@@ -97,7 +97,7 @@ require_once __DIR__ . '/config.php';
         <!-- Copyright -->
         <div class="row">
             <div class="col-12 text-center footer-bottom">
-                <p class="mb-0">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Developed with passion for adventure.</p>
+                <p class="mb-0">&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved. Powered by <a href="https://naitrons.in" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-underline fw-semibold">Naitrons</a>.</p>
             </div>
         </div>
     </div>
